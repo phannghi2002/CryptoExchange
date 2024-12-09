@@ -1,0 +1,12 @@
+.authContainer {
+  background-image: url("https://th.bing.com/th/id/OIF.xl81kObDbabWK6ZzjDTAbw?rs=1&pid=ImgDetMain");
+  height: 100vh;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.bgBlure {
+  backdrop-filter: blur(10px);
+}
