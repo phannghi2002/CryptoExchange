@@ -2,18 +2,23 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
       <profile name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="identityService" />
         <module name="coinService" />
+        <module name="chatAIService" />
         <module name="userService" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="chatAIService" options="-parameters" />
       <module name="coinService" options="-parameters" />
+      <module name="identityService" options="-parameters" />
       <module name="userService" options="-parameters" />
     </option>
   </component>

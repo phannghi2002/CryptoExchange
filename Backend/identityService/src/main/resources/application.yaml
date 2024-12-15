@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: identityService
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/crypt_user
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+
+jwt:
+  signerKey: Os1s6shIo1Cit3j+LWqRjlEjCu8wytD3tQFeIR6Opv1Qec+uafoNtUu1zWyvhVue
+  valid-duration: 3600 # in second
+  refreshable-duration: 36000 # in seconds
+
+server:
+  port: 8083
+
+
