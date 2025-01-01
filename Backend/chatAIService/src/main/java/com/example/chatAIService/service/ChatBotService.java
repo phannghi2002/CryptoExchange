@@ -57,7 +57,7 @@ public class ChatBotService {
     }
 
     public CoinDto makeApiRequest(String currencyName) throws Exception {
-        String url = "http://localhost:8081/coins/details/" + currencyName;
+        String url = "http://localhost:8081/coin/details/" + currencyName;
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
