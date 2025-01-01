@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: watchListService
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/watchlist-service
+
+server:
+  port: 8085
+  servlet:
+    context-path: /watchlist
+
+app:
+  services:
+    coin: http://localhost:8081/coin

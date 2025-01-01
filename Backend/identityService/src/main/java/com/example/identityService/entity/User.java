@@ -17,7 +17,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
-    String username;
+    @Column(unique = true)
+    String email;
     String password;
 
     @ManyToMany(fetch = FetchType.EAGER)

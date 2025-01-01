@@ -1,0 +1,45 @@
+server:
+  port: 8888
+
+app:
+  api-prefix: /api/v1
+
+spring:
+  application:
+    name: apiGateway
+  cloud:
+    gateway:
+      routes:
+        - id: watchlist_service
+          uri: http://localhost:8085
+          predicates:
+            - Path=${app.api-prefix}/watchlist/**
+          filters:
+              - StripPrefix=2
+        - id: profile_service
+          uri: http://localhost:8084
+          predicates:
+            - Path=${app.api-prefix}/profile/**
+          filters:
+            - StripPrefix=2
+        - id: identity_service
+          uri: http://localhost:8083
+          predicates:
+            - Path=${app.api-prefix}/identity/**
+          filters:
+            - StripPrefix=2
+        - id: AI_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=${app.api-prefix}/ai/**
+          filters:
+            - StripPrefix=2
+        - id: coin_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=${app.api-prefix}/coin/**
+          #            - ,${app.api-prefix}/profile/internal/users/**
+          filters:
+            - StripPrefix=2    # nay thuc chat la bo di tien to 1 tien to :/api nhung neu dung no tren gate way
+#            thi van phai them api de no tu dong bo tien to api tro den profile service
+

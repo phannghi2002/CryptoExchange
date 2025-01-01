@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+
+# Ignore sensitive application.yaml in identity-service
+application.yaml

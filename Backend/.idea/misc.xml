@@ -9,6 +9,7 @@
         <option value="$PROJECT_DIR$/chatAIService/pom.xml" />
         <option value="$PROJECT_DIR$/chatAIService/chatAIService/pom.xml" />
         <option value="$PROJECT_DIR$/identityService/pom.xml" />
+        <option value="$PROJECT_DIR$/apiGateway/pom.xml" />
       </list>
     </option>
   </component>

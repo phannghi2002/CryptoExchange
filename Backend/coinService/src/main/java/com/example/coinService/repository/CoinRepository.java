@@ -23,7 +23,10 @@ public interface CoinRepository extends MongoRepository<Coin, String>, PagingAnd
     @Query("{ 'price_change_percentage_24h': { $lt: 0 } }")
     List<Coin> findTop10ByPriceChangePercentage24hAsc(Pageable pageable);
 
-
     @Query("{ '$or': [ { 'id': { '$regex': ?0, '$options': 'i' } }, { 'symbol': { '$regex': ?0, '$options': 'i' } } ] }")
     Optional<List<Coin>> findCoinByIdOrSymbol(String keyword);
+
+    @Query("{ '_id': { '$in': ?0 } }")
+    List<Coin> findByCoinIdIn(List<String> coinIds);
+
 }

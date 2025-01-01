@@ -18,18 +18,14 @@ import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { useSearchParams } from "react-router-dom";
 
 import PaginatedComponent from "./PaginatedComponent";
+import ChatBot from "./ChatBot";
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // const [category, setCategory] = useState("all");
-
   const [category, setCategory] = useState(
     searchParams.get("category") || "all"
   );
-
-  const [inputValue, setInputValue] = useState("");
-  const [isBotRealease, setIsBotRealease] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [previousSearchTerm, setPreviousSearchTerm] = useState("");
@@ -40,8 +36,6 @@ function Home() {
   const { coin } = useSelector((store) => store);
 
   const dispatch = useDispatch();
-
-  const handleBotRealease = () => setIsBotRealease(!isBotRealease);
 
   const handleCategory = (value) => {
     if (category === "searchCoin" && value !== "searchCoin") {
@@ -56,16 +50,6 @@ function Home() {
     // Set the new category in both state and URL
     setCategory(value); // Set the new category in state
     setSearchParams({ category: value }); // Update the category in URL query params
-  };
-
-  const handleChange = (e) => {
-    setInputValue(e.target.value);
-  };
-  const handleKeyPress = (e) => {
-    if (e.key == "Enter") {
-      console.log(inputValue);
-    }
-    setInputValue("");
   };
 
   useEffect(() => {
@@ -200,68 +184,7 @@ function Home() {
         </div>
       </div>
 
-      <section className="absolute bottom-20 right-5 z-40 flex flex-col justify-end items-end gap-2">
-        {isBotRealease && (
-          <div className="rounded-md w-[20rem] md:w-[25rem] lg:w-[25rem] h-[70vh] bg-slate-900">
-            <div className="flex justify-between items-center border-b px-6 h-[12%]">
-              <p>Chat Bot</p>
-              <Button onClick={handleBotRealease} variant="ghost" size="icon">
-                <Cross1Icon />
-              </Button>
-            </div>
-
-            <div className="flex flex-col overflow-y-auto gap-5 px-5 h-[76%] py-2 scroll-container">
-              <div className="self-start pb-5 w-auto">
-                <div className="justify-end self-end px-5 py-2 rounded-md bg-slate-800 w-auto">
-                  <p>hello</p>
-                  <p>klsjfgsjglksjfgklsajgklajglajajgfkljgak</p>
-                  <p>nhu biu</p>
-                </div>
-              </div>
-
-              {[1, 1, 1, 1].map((item, i) => (
-                <div
-                  key={i}
-                  className={`${i % 2 == 0 ? "self-start" : "self-end"}`}
-                >
-                  {i % 2 == 0 ? (
-                    <div className="justify-end self-end px-5 py-2 rounded-md bg-slate-800 w-auto">
-                      <p>promtwho are upi</p>
-                    </div>
-                  ) : (
-                    <div className="justify-end self-end px-5 py-2 rounded-md bg-slate-800 w-auto">
-                      <p>and hi, Raam Arora</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            <div className="h-[12%] border-t">
-              <Input
-                className="h-full w-full order-none outline-none"
-                placeholder="Write promt"
-                onChange={handleChange}
-                value={inputValue}
-                onKeyPress={handleKeyPress}
-              />
-            </div>
-          </div>
-        )}
-
-        <div className="relative w-[10rem] cursor-pointer group">
-          <Button
-            className="w-full h-[3rem] gap-2 items-center"
-            onClick={handleBotRealease}
-          >
-            <MessageCircle
-              size={30}
-              className="fill-[#1e293b] -rotate-90 stroke-none group-hover:fill-[#1a1a1a]"
-            />
-            <span className="text-2xl">Chat Bot</span>
-          </Button>
-        </div>
-      </section>
+      <ChatBot />
     </div>
   );
 }

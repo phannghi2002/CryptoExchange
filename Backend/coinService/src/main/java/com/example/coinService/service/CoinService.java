@@ -20,8 +20,6 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class CoinService {
-
-
     @Autowired
     private CoinRepository coinRepository;
 
@@ -111,6 +109,10 @@ public class CoinService {
             log.info("LOG11");
             return coinRepository.findByMarketCapRankBetween(1, 50);
         }
+    }
+
+    public List<Coin> getCoinsByIds(List<String> coinIds) {
+        return coinRepository.findByCoinIdIn(coinIds);
     }
 
 }
