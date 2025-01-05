@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import AssetTable from "./AssetTable";
 import { useDebounce } from "use-debounce";
 
-import { MessageCircle } from "lucide-react";
-import { Cross1Icon } from "@radix-ui/react-icons";
 import { Input } from "@/components/ui/input";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -21,6 +19,26 @@ import PaginatedComponent from "./PaginatedComponent";
 import ChatBot from "./ChatBot";
 
 function Home() {
+  //lấy token dành cho người dùng đăng nhập bằng OAuth
+  useEffect(() => {
+    fetch("http://localhost:8888/api/v1/identity/oauth2/success", {
+      method: "GET",
+      credentials: "include", // Gửi cookie kèm request
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error("Không tìm thấy token");
+        return response.json();
+      })
+      .then((data) => {
+        if (data.token) {
+          localStorage.setItem("access_token", data.token);
+        }
+      })
+      .catch((error) => {
+        console.error("Lỗi khi lấy token: ", error);
+      });
+  }, []);
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [category, setCategory] = useState(

@@ -42,4 +42,20 @@ spring:
           filters:
             - StripPrefix=2    # nay thuc chat la bo di tien to 1 tien to :/api nhung neu dung no tren gate way
 #            thi van phai them api de no tu dong bo tien to api tro den profile service
-
+#            - AddResponseHeader=Access-Control-Allow-Origin, http://localhost:5173
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - Authorization
+              - Content-Type
+            allowCredentials: true

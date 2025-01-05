@@ -1,7 +1,7 @@
 spring:
   application:
     name: identityService
-  
+ 
 
   datasource:
     url: jdbc:mysql://localhost:3306/crypt_user
@@ -34,6 +34,7 @@ logging:
   level:
     org:
       springframework:
-        security : TRACE
+        security:
+          oauth2 : DEBUG
 
 

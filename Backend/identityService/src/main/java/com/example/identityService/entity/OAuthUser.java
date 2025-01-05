@@ -29,7 +29,7 @@ public class OAuthUser {
     @Column(nullable = false)
     String providerId;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     Set<Role> roles = new HashSet<>();
 
     LocalDateTime createdAt;

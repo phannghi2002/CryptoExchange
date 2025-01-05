@@ -11,6 +11,7 @@ import Wallet from "./page/Wallet/Wallet";
 import PaymentDetails from "./page/PaymentDetails/PaymentDetails";
 import Withdrawal from "./page/Withdrawal/Withdrawal";
 import StockDetails from "./page/StockDetails/StockDetails";
+import Auth from "./page/Auth/Auth";
 // import Auth from "./page/Auth/Auth";
 // import { useDispatch, useSelector } from "react-redux";
 // import { useEffect } from "react";
@@ -44,6 +45,8 @@ function App() {
           <Route path="market/:id" element={<StockDetails />} />
 
           <Route path="*" element={<Notfound />} />
+
+          <Route path="/auth" element={<Auth />} />
         </Routes>
       </div>
       {/* ) : (

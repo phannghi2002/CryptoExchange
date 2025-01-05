@@ -33,9 +33,12 @@ function ChatBot() {
   const handleFetchCoinDetails = async (prompt) => {
     setLoading(true);
     try {
-      const { data } = await axios.post("http://localhost:8082/ai/chat", {
-        prompt,
-      });
+      const { data } = await axios.post(
+        "http://localhost:8888/api/v1/ai/chat",
+        {
+          prompt,
+        }
+      );
 
       setMessages((prevMessages) => [
         ...prevMessages,

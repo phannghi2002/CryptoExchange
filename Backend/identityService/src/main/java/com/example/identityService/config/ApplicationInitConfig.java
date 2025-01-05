@@ -52,6 +52,7 @@ public class ApplicationInitConfig {
                         .description("Admin role")
                         .build());
 
+                log.info("hehehehe");
                 HashSet<Role> roles = new HashSet<>();
                 roles.add(adminRole);
 

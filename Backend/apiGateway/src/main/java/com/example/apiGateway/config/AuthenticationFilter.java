@@ -1,33 +1,5 @@
 package com.example.apiGateway.config;
 
-
-//import com.example.apiGateway.dto.response.ApiResponse;
-//import com.example.apiGateway.service.IdentityService;
-//import com.fasterxml.jackson.core.JsonProcessingException;
-//import com.fasterxml.jackson.databind.ObjectMapper;
-//import lombok.AccessLevel;
-//import lombok.RequiredArgsConstructor;
-//import lombok.experimental.FieldDefaults;
-//import lombok.experimental.NonFinal;
-//import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-//import org.springframework.cloud.gateway.filter.GlobalFilter;
-//import org.springframework.core.Ordered;
-//import org.springframework.http.HttpHeaders;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.MediaType;
-//import org.springframework.http.server.reactive.ServerHttpRequest;
-//import org.springframework.http.server.reactive.ServerHttpResponse;
-//import org.springframework.stereotype.Component;
-//import org.springframework.util.CollectionUtils;
-//import org.springframework.web.server.ServerWebExchange;
-//import reactor.core.publisher.Mono;
-//
-//import java.util.Arrays;
-//import java.util.List;
-
-
 import com.example.apiGateway.dto.response.ApiResponse;
 import com.example.apiGateway.service.IdentityService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -65,6 +37,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     @NonFinal
     String[] publicEndpoint = {
+            "/identity/oauth2/.*",
+            "/identity/login/.*",
             "/identity/auth/.*",
             "/identity/users/registration",
             "/ai/.*",
@@ -81,9 +55,10 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         log.info("enter authentication filter ...");
 
         if (isPublicEndpoint(exchange.getRequest())) {
+            log.info("can deo gi phai xac thuc ...");
             return chain.filter(exchange);
         }
-
+        log.info("bat xac thuc nhen con ...");
         // Get the Authorization header as a list of strings
         List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
 
@@ -109,42 +84,6 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         }).onErrorResume(throwable -> unauthenticated(exchange.getResponse()));
     }
 
-
-//    @Override
-//    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-//        log.info("enter authentication filter ...");
-//
-//        if (isPublicEndpoint(exchange.getRequest()))  {
-//            return chain.filter(exchange);
-//        }
-//
-//        //cai interface nay chua cac method getRequest() -> tra ve ServerHttpRequest interface
-//        List<String> authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION);
-//
-//        //cau lenh if dam bao rang co gia tri trong phan header, con token dung sai thi ko quan tam
-//        if (CollectionUtils.isEmpty(authHeader)) {
-//            return unauthenticated(exchange.getResponse());
-//        }
-//
-//        String token = authHeader.getFirst().replace("Bearer ", "");
-//        log.info("Token {}", token);
-//
-//        //flatMap dung de lay ket qua cua cai method trong mono
-//        return identityService.introspect(token).flatMap(introspectResponse -> {
-//            //neu xac thuc thanh cong thi ta nhay den filter tiep theo
-//            if (introspectResponse.getResult().isValid()) return chain.filter(exchange);
-//            else return unauthenticated(exchange.getResponse());
-//        }).onErrorResume(throwable -> unauthenticated(exchange.getResponse()));
-////neu co loi nao bat ky xay ra nhu mat ket noi, 503, network error, timeout,...
-//// thi ta cung nem ngoai le la thang unauthenticated
-//
-//    }
-
-//    @Override
-//    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-//        log.info("custom global filter");
-//        return chain.filter(exchange);
-//    }
 
     //ham nay dung de xep thu tu uu tien cua GlobalFilter, cang nho thi do uu tien cang lon
     @Override
