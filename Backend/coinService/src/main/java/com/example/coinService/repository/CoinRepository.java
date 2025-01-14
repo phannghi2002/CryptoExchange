@@ -29,4 +29,5 @@ public interface CoinRepository extends MongoRepository<Coin, String>, PagingAnd
     @Query("{ '_id': { '$in': ?0 } }")
     List<Coin> findByCoinIdIn(List<String> coinIds);
 
+
 }

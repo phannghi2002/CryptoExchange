@@ -17,27 +17,32 @@ import { useSearchParams } from "react-router-dom";
 
 import PaginatedComponent from "./PaginatedComponent";
 import ChatBot from "./ChatBot";
+import { v4 as uuidv4 } from "uuid"; // Sử dụng thư viện uuid để tạo connectionId
 
 function Home() {
   //lấy token dành cho người dùng đăng nhập bằng OAuth
-  useEffect(() => {
-    fetch("http://localhost:8888/api/v1/identity/oauth2/success", {
-      method: "GET",
-      credentials: "include", // Gửi cookie kèm request
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Không tìm thấy token");
-        return response.json();
-      })
-      .then((data) => {
-        if (data.token) {
-          localStorage.setItem("access_token", data.token);
-        }
-      })
-      .catch((error) => {
-        console.error("Lỗi khi lấy token: ", error);
-      });
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:8888/api/v1/identity/oauth2/success", {
+  //     method: "GET",
+  //     credentials: "include", // Gửi cookie kèm request
+  //   })
+  //     .then((response) => {
+  //       if (!response.ok) throw new Error("Không tìm thấy token");
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       if (data.token) {
+  //         localStorage.setItem("access_token", data.token);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.error("Lỗi khi lấy token: ", error);
+  //     });
+  // }, []);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [updatedCoins, setUpdatedCoins] = useState([]);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -49,7 +54,48 @@ function Home() {
   const [previousSearchTerm, setPreviousSearchTerm] = useState("");
   const [debouncedSearchTerm] = useDebounce(searchTerm, 1000); // 1 second debounce
 
-  const [currentPage, setCurrentPage] = useState(1);
+  useEffect(() => {
+    let eventSource;
+    const connectionId = uuidv4();
+
+    const connectSSE = () => {
+      const url = new URL("http://localhost:8888/api/v1/coin/sse/coin-price");
+      url.searchParams.append("page", currentPage - 1);
+      url.searchParams.append("category", category);
+      if (category === "searchCoin" && searchTerm) {
+        url.searchParams.append("keyword", searchTerm);
+      }
+      url.searchParams.append("connectionId", connectionId);
+
+      eventSource = new EventSource(url.toString());
+
+      eventSource.addEventListener("coins", (event) => {
+        try {
+          const coins = JSON.parse(event.data);
+          console.log("Updated Coins:", coins);
+          setUpdatedCoins(coins);
+        } catch (error) {
+          console.error("Error parsing SSE data:", error);
+        }
+      });
+
+      eventSource.onerror = (error) => {
+        console.error("SSE error:", error);
+        eventSource.close();
+        connectSSE();
+      };
+    };
+
+    connectSSE();
+
+    return () => {
+      if (eventSource) {
+        eventSource.close();
+      }
+    };
+  }, [currentPage, category, searchTerm]);
+
+  useEffect(() => {}, [updatedCoins]);
 
   const { coin } = useSelector((store) => store);
 
@@ -83,19 +129,10 @@ function Home() {
     }
   }, [category, currentPage]);
 
-  // useEffect(() => {
-  //   // Get the category from the URL, default to "all"
-  //   const newCategory = searchParams.get("category") || "all";
-  //   setCategory(newCategory);
-
-  //   // Get the page number from the URL, default to 1
-  //   const pageParam = parseInt(searchParams.get("p")) || 1;
-  //   setCurrentPage(pageParam);
-  // }, [searchParams]);
-
   useEffect(() => {
     // Get the category from the URL, default to "all"
     const newCategory = searchParams.get("category") || "all";
+    console.log("category ne, page ne", category, currentPage);
     setCategory(newCategory);
   }, [searchParams.get("category")]);
 
@@ -119,6 +156,26 @@ function Home() {
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
     console.log(e.target.value);
+  };
+
+  const getUpdatedCoins = (category, updatedCoins, coin) => {
+    if (!Array.isArray(updatedCoins) || updatedCoins.length === 0) {
+      switch (category) {
+        case "all":
+          return coin.coinList || [];
+        case "top50":
+          return coin.top50 || [];
+        case "topGainers":
+          return coin.topGainers || [];
+        case "topLosers":
+          return coin.topLosers || [];
+        case "searchCoin":
+          return coin.searchCoin || [];
+        default:
+          return [];
+      }
+    }
+    return updatedCoins;
   };
 
   return (
@@ -176,21 +233,10 @@ function Home() {
           </div>
 
           <AssetTable
-            coin={
-              category === "all"
-                ? coin.coinList
-                : category === "top50"
-                ? coin.top50
-                : category === "topGainers"
-                ? coin.topGainers
-                : category === "topLosers"
-                ? coin.topLosers
-                : category === "searchCoin"
-                ? coin.searchCoinList
-                : []
-            }
+            coin={getUpdatedCoins(category, updatedCoins, coin)}
             category={category}
           />
+
           {category === "all" && (
             <div>
               <PaginatedComponent

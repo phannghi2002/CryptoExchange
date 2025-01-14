@@ -11,7 +11,7 @@
         <module name="chatAIService" />
         <module name="userService" />
       </profile>
-      <profile name="Annotation profile for watchListService" enabled="true">
+      <profile name="Annotation profile for coinService" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -25,8 +25,8 @@
           <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct/1.5.5.Final/mapstruct-1.5.5.Final.jar" />
         </processorPath>
         <module name="identityService" />
-        <module name="profileService" />
         <module name="coinService" />
+        <module name="profileService" />
         <module name="watchListService" />
       </profile>
     </annotationProcessing>

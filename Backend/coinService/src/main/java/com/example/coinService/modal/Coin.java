@@ -1,11 +1,14 @@
 package com.example.coinService.modal;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 @Document(collection = "coin")
@@ -43,5 +46,19 @@ public class Coin {
     @JsonIgnore
     private String roi; // This is nullable
     private Date last_updated;
+
+
+    public void setCurrent_price(double current_price) {
+        this.current_price = new BigDecimal(current_price)
+                .setScale(3, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
+
+    public void setPrice_change_percentage_24h(double price_change_percentage_24h) {
+        this.price_change_percentage_24h = new BigDecimal(price_change_percentage_24h)
+                .setScale(3, RoundingMode.HALF_UP)
+                .doubleValue();
+    }
+
 }
 
