@@ -14,7 +14,7 @@ spring:
 notification:
   email:
     brevo-url: https://api.brevo.com
-    brevo-apikey: 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
+    
 
 server:
   port: 8086
