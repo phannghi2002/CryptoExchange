@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/Backend/coinService/pom.xml" />
         <option value="$PROJECT_DIR$/Backend/profileService/pom.xml" />
         <option value="$PROJECT_DIR$/Backend/watchListService/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/notificationService/pom.xml" />
       </list>
     </option>
   </component>

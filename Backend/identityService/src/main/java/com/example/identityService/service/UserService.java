@@ -1,9 +1,10 @@
 package com.example.identityService.service;
 
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 
+import com.example.event.dto.NotificationEvent;
+import com.example.identityService.constant.EmailTemplate;
 import com.example.identityService.constant.PredefinedRole;
 import com.example.identityService.dto.request.UserCreationRequest;
 import com.example.identityService.dto.request.UserUpdateRequest;
@@ -17,6 +18,7 @@ import com.example.identityService.mapper.UserMapper;
 import com.example.identityService.repository.RoleRepository;
 import com.example.identityService.repository.UserRepository;
 import com.example.identityService.repository.httpclient.ProfileClient;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,6 +43,8 @@ public class UserService {
     ProfileClient profileClient;
     ProfileMapper profileMapper;
 
+    KafkaTemplate<String, Object> kafkaTemplate;
+
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_EXISTED);
 
@@ -59,7 +63,45 @@ public class UserService {
         //goi den cac controller in profile
         profileClient.createProfile(profileRequest);
 
+        Map<String, Object> param = Map.of("name", profileRequest.getFirstName() + " " + profileRequest.getLastName());
+
+
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(request.getEmail())
+                .template(EmailTemplate.WELCOME_EMAIL)
+                .param(param)
+                .build();
+        //publish message to kafka
+        kafkaTemplate.send("notification-delivery", notificationEvent);
+
         return userMapper.toUserResponse(user);
+    }
+
+    public String randomCode() {
+        // Sử dụng Random để sinh số ngẫu nhiên từ 100000 đến 999999
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000); // 900000 = (999999 - 100000 + 1)
+
+        // Chuyển số nguyên thành chuỗi và trả về
+        return String.valueOf(code);
+    }
+
+    public void forgotPassword(String email) {
+        if (!userRepository.existsByEmail(email)) throw new AppException(ErrorCode.USER_NOT_EXISTED);
+
+        String code = randomCode();
+        Map<String, Object> param = Map.of("code", code);
+
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(email)
+                .template(EmailTemplate.FORGOT_PASSWORD)
+                .param(param)
+                .build();
+        //publish message to kafka
+        kafkaTemplate.send("notification-delivery", notificationEvent);
+
     }
 
     public UserResponse getMyInfo() {

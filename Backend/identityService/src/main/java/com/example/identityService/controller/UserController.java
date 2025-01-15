@@ -3,6 +3,7 @@ package com.example.identityService.controller;
 import java.util.List;
 
 
+import com.example.identityService.dto.request.EmailRequest;
 import com.example.identityService.dto.request.UserCreationRequest;
 import com.example.identityService.dto.request.UserUpdateRequest;
 import com.example.identityService.dto.response.ApiResponse;
@@ -29,6 +30,14 @@ public class UserController {
     ApiResponse<UserResponse> createUser(@RequestBody UserCreationRequest request) {
         return ApiResponse.<UserResponse>builder()
                 .result(userService.createUser(request))
+                .build();
+    }
+
+    @PostMapping("/forgotPassword")
+    ApiResponse<String> forgotPassword(@RequestBody EmailRequest request) {
+        userService.forgotPassword(request.getEmail());
+        return ApiResponse.<String>builder()
+                .result("Mã code đã được gửi tới email của bạn.")
                 .build();
     }
 

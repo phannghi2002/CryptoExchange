@@ -10,6 +10,12 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: notification_service
+          uri: http://localhost:8086
+          predicates:
+            - Path=${app.api-prefix}/notification/**
+          filters:
+              - StripPrefix=2
         - id: watchlist_service
           uri: http://localhost:8085
           predicates:
