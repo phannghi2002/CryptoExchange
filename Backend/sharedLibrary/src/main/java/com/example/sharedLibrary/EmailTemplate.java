@@ -1,12 +1,11 @@
-package com.example.identityService.constant;
+package com.example.sharedLibrary;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 
 import java.util.Map;
 
 @Getter
-@AllArgsConstructor
 public enum EmailTemplate {
     FORGOT_PASSWORD("FORGOT_PASSWORD", "Reset Your Password",
             "<html><body><h1>Reset Your Password</h1><p>Your reset code is <b>{code}</b></p></body></html>"),
@@ -18,6 +17,12 @@ public enum EmailTemplate {
     private final String code;
     private final String subjectTemplate;
     private final String bodyTemplate;
+
+    EmailTemplate(String code, String subjectTemplate, String bodyTemplate) {
+        this.code = code;
+        this.subjectTemplate = subjectTemplate;
+        this.bodyTemplate = bodyTemplate;
+    }
 
     public String generateSubject(Map<String, Object> params) {
         // Nếu cần xử lý tham số trong subject
@@ -32,4 +37,3 @@ public enum EmailTemplate {
         return body;
     }
 }
-

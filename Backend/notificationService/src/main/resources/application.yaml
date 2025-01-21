@@ -14,7 +14,7 @@ spring:
 notification:
   email:
     brevo-url: https://api.brevo.com
-    
+
 
 server:
   port: 8086

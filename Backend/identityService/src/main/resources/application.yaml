@@ -1,8 +1,12 @@
 spring:
   application:
     name: identityService
+  
 
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
   datasource:
     url: jdbc:mysql://localhost:3306/crypt_user
     driver-class-name: com.mysql.cj.jdbc.Driver

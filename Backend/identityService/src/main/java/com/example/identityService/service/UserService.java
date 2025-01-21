@@ -3,8 +3,13 @@ package com.example.identityService.service;
 import java.util.*;
 
 
-import com.example.event.dto.NotificationEvent;
-import com.example.identityService.constant.EmailTemplate;
+//import com.example.event.dto.NotificationEvent;
+//import com.example.identityService.constant.EmailTemplate;
+import com.example.identityService.dto.response.ApiResponse;
+import com.example.sharedLibrary.NotificationEvent;
+import com.example.sharedLibrary.EmailTemplate;
+
+
 import com.example.identityService.constant.PredefinedRole;
 import com.example.identityService.dto.request.UserCreationRequest;
 import com.example.identityService.dto.request.UserUpdateRequest;
@@ -18,6 +23,7 @@ import com.example.identityService.mapper.UserMapper;
 import com.example.identityService.repository.RoleRepository;
 import com.example.identityService.repository.UserRepository;
 import com.example.identityService.repository.httpclient.ProfileClient;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +50,9 @@ public class UserService {
     ProfileMapper profileMapper;
 
     KafkaTemplate<String, Object> kafkaTemplate;
+
+    RedisTemplate redisTemplate;
+    OtpService otpService;
 
     public UserResponse createUser(UserCreationRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) throw new AppException(ErrorCode.USER_EXISTED);
@@ -87,21 +96,65 @@ public class UserService {
         return String.valueOf(code);
     }
 
+//    public void forgotPassword(String email) {
+//        if (!userRepository.existsByEmail(email)) throw new AppException(ErrorCode.USER_NOT_EXISTED);
+//
+//        String code = randomCode();
+//        Map<String, Object> param = Map.of("code", code);
+//
+//        NotificationEvent notificationEvent = NotificationEvent.builder()
+//                .channel("EMAIL")
+//                .recipient(email)
+//                .template(EmailTemplate.FORGOT_PASSWORD)
+//                .param(param)
+//                .build();
+//        //publish message to kafka
+//        kafkaTemplate.send("notification-delivery", notificationEvent);
+//
+//    }
+
     public void forgotPassword(String email) {
-        if (!userRepository.existsByEmail(email)) throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        // Kiểm tra xem email có tồn tại không
+        if (!userRepository.existsByEmail(email)) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
 
+        // Tạo mã OTP
         String code = randomCode();
-        Map<String, Object> param = Map.of("code", code);
 
+        // Lưu mã OTP vào Redis với TTL là 5 phút (300 giây)
+        otpService.saveOtp(email, "FORGOT_PASSWORD", code, 300);
+
+        // Tạo thông báo gửi qua Kafka
+        Map<String, Object> param = Map.of("code", code);
         NotificationEvent notificationEvent = NotificationEvent.builder()
                 .channel("EMAIL")
                 .recipient(email)
                 .template(EmailTemplate.FORGOT_PASSWORD)
                 .param(param)
                 .build();
-        //publish message to kafka
-        kafkaTemplate.send("notification-delivery", notificationEvent);
 
+        // Gửi thông báo qua Kafka
+        kafkaTemplate.send("notification-delivery", notificationEvent);
+    }
+
+    public ApiResponse<Void> checkOTP(String email, String action, String otpCode) {
+        String key = String.format("OTP:%s:%s", action, email);
+        String storedOtp = (String) redisTemplate.opsForValue().get(key);
+        log.info("max otp:{}", storedOtp);
+
+        if (storedOtp == null) {
+            throw new AppException(ErrorCode.OTP_NOT_FOUND);
+        }
+
+        if (!storedOtp.equals(otpCode)) {
+            throw new AppException(ErrorCode.INVALID_OTP);
+        }
+
+        redisTemplate.delete(key);
+        return ApiResponse.<Void>builder()
+                .message("OTP verified successfully")
+                .build();
     }
 
     public UserResponse getMyInfo() {

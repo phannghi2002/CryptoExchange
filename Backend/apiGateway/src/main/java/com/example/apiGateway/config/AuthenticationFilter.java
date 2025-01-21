@@ -42,6 +42,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/auth/.*",
             "/identity/users/registration",
             "/identity/users/forgotPassword",
+            "/identity/test-redis",
             "/ai/.*",
             "/coin/.*",
             "/notification/email/send"

@@ -1,6 +1,5 @@
-package com.example.event.dto;
+package com.example.sharedLibrary;
 
-import com.example.notificationService.constant.EmailTemplate;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

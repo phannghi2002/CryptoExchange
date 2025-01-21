@@ -3,14 +3,12 @@ package com.example.identityService.controller;
 import java.text.ParseException;
 
 
-import com.example.identityService.dto.request.AuthenticationRequest;
-import com.example.identityService.dto.request.IntrospectRequest;
-import com.example.identityService.dto.request.LogoutRequest;
-import com.example.identityService.dto.request.RefreshRequest;
+import com.example.identityService.dto.request.*;
 import com.example.identityService.dto.response.ApiResponse;
 import com.example.identityService.dto.response.AuthenticationResponse;
 import com.example.identityService.dto.response.IntrospectResponse;
 import com.example.identityService.service.AuthenticationService;
+import com.example.identityService.service.UserService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +24,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationController {
     AuthenticationService authenticationService;
+    UserService userService;
 
     @PostMapping("/token")
     ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) throws ParseException {
@@ -50,5 +49,10 @@ public class AuthenticationController {
     ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder().build();
+    }
+
+    @PostMapping("/checkOTP")
+    ApiResponse<Void> checkOTP(@RequestBody OtpRequest request) throws ParseException, JOSEException {
+        return userService.checkOTP(request.getEmail(), request.getAction(), request.getOtpCode());
     }
 }
