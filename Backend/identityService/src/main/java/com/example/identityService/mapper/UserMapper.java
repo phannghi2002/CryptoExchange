@@ -3,6 +3,7 @@ package com.example.identityService.mapper;
 import com.example.identityService.dto.request.UserCreationRequest;
 import com.example.identityService.dto.request.UserUpdateRequest;
 import com.example.identityService.dto.response.UserResponse;
+import com.example.identityService.entity.OAuthUser;
 import com.example.identityService.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -17,4 +18,6 @@ public interface UserMapper {
 
     @Mapping(target = "roles", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
+
+    UserResponse toOAuthUserResponse(OAuthUser oAuthUser);
 }

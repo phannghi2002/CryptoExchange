@@ -16,4 +16,6 @@ public class UserResponse {
     String email;
 
     Set<RoleResponse> roles;
+
+    Boolean twoAuth;
 }

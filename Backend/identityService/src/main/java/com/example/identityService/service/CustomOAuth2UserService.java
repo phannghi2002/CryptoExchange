@@ -2,14 +2,22 @@ package com.example.identityService.service;
 
 import com.example.identityService.dto.request.ProfileCreationRequest;
 import com.example.identityService.dto.response.UserProfileResponse;
+import com.example.identityService.dto.response.UserResponse;
 import com.example.identityService.entity.OAuthUser;
 import com.example.identityService.entity.Role;
+import com.example.identityService.exception.AppException;
+import com.example.identityService.exception.ErrorCode;
+import com.example.identityService.mapper.UserMapper;
 import com.example.identityService.repository.OAuthUserRepository;
 import com.example.identityService.repository.RoleRepository;
 import com.example.identityService.repository.httpclient.ProfileClient;
+import com.example.sharedLibrary.EmailTemplate;
+import com.example.sharedLibrary.NotificationEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -20,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -39,6 +48,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Autowired
     private ProfileClient profileClient;
+
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -96,6 +111,20 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         UserProfileResponse response = profileClient.createProfile(profileOAuthUser);
         log.info("Profile created with response: {}", response);
 
+        //Gửi email chào mừng đến với nền tảng giao dịch
+        Map<String, Object> param = Map.of("name", firstName + " " + lastName);
+
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(email)
+                .template(EmailTemplate.WELCOME_EMAIL)
+                .param(param)
+                .build();
+
+
+        // Gửi thông báo qua Kafka
+        kafkaTemplate.send("notification-delivery", notificationEvent);
+
         return savedUser;
     }
 
@@ -106,6 +135,22 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             return LocalDate.parse(dobString);
         }
         return null;
+    }
+
+    public UserResponse convert2FA() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        OAuthUser oAuthUser = oAuthUserRepository.findByEmail(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Chuyển đổi trạng thái twoAuth
+        oAuthUser.setTwoAuth(!Boolean.TRUE.equals(oAuthUser.getTwoAuth()));
+
+        // Lưu thay đổi và trả về UserResponse
+        OAuthUser updatedOAuthUser = oAuthUserRepository.save(oAuthUser);
+
+        return userMapper.toOAuthUserResponse(updatedOAuthUser);
     }
 
 }

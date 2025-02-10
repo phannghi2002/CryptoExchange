@@ -18,6 +18,7 @@ public enum ErrorCode {
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     OTP_NOT_FOUND(1011, "OTP not existed or expired", HttpStatus.BAD_REQUEST),
     INVALID_OTP(1012, "Code OTP not valid", HttpStatus.BAD_REQUEST),
+    INVALID_OLD_PASSWORD(1012, " Old password not correct", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

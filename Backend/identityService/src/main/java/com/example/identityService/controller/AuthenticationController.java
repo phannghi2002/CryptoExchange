@@ -55,4 +55,10 @@ public class AuthenticationController {
     ApiResponse<Void> checkOTP(@RequestBody OtpRequest request) throws ParseException, JOSEException {
         return userService.checkOTP(request.getEmail(), request.getAction(), request.getOtpCode());
     }
+
+    @PostMapping("/welcome")
+    ApiResponse<Void> welcome(@RequestBody WelcomeRequest request) throws ParseException, JOSEException {
+
+        return userService.welcomeTradingPlatform(request.getEmail(), request.getFirstName(), request.getLastName());
+    }
 }

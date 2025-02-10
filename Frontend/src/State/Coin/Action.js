@@ -35,8 +35,7 @@ export const getAllCoin = (page) => async (dispatch) => {
   try {
     // const { data } = await axios.get(`${API_BASE_URL}/coins?page=${page}`);
     const { data } = await axios.get(
-      // `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page=${page}`
-      `http://localhost:8888/api/v1/coin/getAll`
+      `${API_BASE_URL}/coin/getAll`
       //`https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=10&page=${page}`
     );
     console.log("coin all", data);
@@ -58,7 +57,7 @@ export const getCoinList =
     try {
       // const { data } = await axios.get(`${API_BASE_URL}/coins?page=${page}`);
       const { data } = await axios.get(
-        `http://localhost:8888/api/v1/coin/list?page=${page - 1}`
+        `${API_BASE_URL}/coin/list?page=${page - 1}`
       );
       console.log("coin list", data);
 
@@ -77,7 +76,7 @@ export const getTop50CoinList = () => async (dispatch) => {
     // const response = await axios.get(`${API_BASE_URL}/coins/top50`);
     const response = await axios.get(
       // `https://api.coingecko.com/api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=50&page=1`
-      "http://localhost:8888/api/v1/coin/top50"
+      `${API_BASE_URL}/coin/top50`
     );
     console.log("coin top 50", response.data);
 
@@ -96,7 +95,7 @@ export const getTopGainers = () => async (dispatch) => {
     // const response = await axios.get(`${API_BASE_URL}/coins/top50`);
     const response = await axios.get(
       // `https://api.coingecko.com/api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=50&page=1`
-      "http://localhost:8888/api/v1/coin/topGainers"
+      `${API_BASE_URL}/coin/topGainers`
     );
     console.log("topGainers", response.data);
 
@@ -115,7 +114,7 @@ export const getTopLosers = () => async (dispatch) => {
     // const response = await axios.get(`${API_BASE_URL}/coins/top50`);
     const response = await axios.get(
       // `https://api.coingecko.com/api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=50&page=1`
-      "http://localhost:8888/api/v1/coin/topLosers"
+      `${API_BASE_URL}/coin/topLosers`
     );
     console.log("topLosers", response.data);
 
@@ -140,7 +139,7 @@ export const fetchMarketChart =
       const response = await axios.get(
         // `https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=1`
         //  `https://api.coingecko.com/api/v3/coins/${coinId}/market_chart?vs_currency=usd&days=${days}`
-        `http://localhost:8888/api/v1/coin/market/${coinId}?day=${days}`
+        `${API_BASE_URL}/coin/market/${coinId}?day=${days}`
       );
       console.log("market chart", response.data);
 
@@ -161,7 +160,7 @@ export const fetchCoinDetails = (coinId) => async (dispatch) => {
     const response = await axios.get(
       // `https://api.coingecko.com/api/v3/coins/${coinId}`
 
-      `http://localhost:8888/api/v1/coin/details/${coinId}`
+      `${API_BASE_URL}/coin/details/${coinId}`
     );
     console.log("in ra t xem nao", response.data);
 
@@ -182,7 +181,7 @@ export const searchCoin = (keyword) => async (dispatch) => {
 
   try {
     const response = await axios.get(
-      `http://localhost:8888/api/v1/coin/search?q=${keyword}`
+      `${API_BASE_URL}/coin/search?q=${keyword}`
     );
     console.log("search coin", response.data);
 

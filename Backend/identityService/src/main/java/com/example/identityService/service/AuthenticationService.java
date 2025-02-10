@@ -91,6 +91,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .expiryTime(expiryTime)
+                .twoAuth(user.getTwoAuth())
                 .build();
 
     }
@@ -132,6 +133,7 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(token)
                 .expiryTime(expiryTime)
+                .twoAuth(user.getTwoAuth())
                 .build();
     }
 
@@ -148,6 +150,7 @@ public class AuthenticationService {
                 .jwtID(UUID.randomUUID().toString())
                 .claim("scope", buildScope(user))
                 .claim("userId", user.getId())
+                .claim("twoAuth", user.getTwoAuth())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());

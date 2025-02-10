@@ -75,15 +75,12 @@ public class WatchListService {
     }
 
     public List<String> getCoinIdsByUserId() {
-
         String userId = getUserIdFromToken();
-        // Find watchlist by userId
-        WatchList watchList = watchListRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Watchlist not found for userId: " + userId));
-
-        // Return the list of coinIds
-        return watchList.getCoinIds();
+        return watchListRepository.findByUserId(userId)
+                .map(WatchList::getCoinIds)
+                .orElse(Collections.emptyList()); // Trả về danh sách rỗng
     }
+
 
     public List<CoinResponse> getCoinsInWatchList() {
 // 1. Lấy danh sách coinIds từ WatchList của người dùng

@@ -12,8 +12,9 @@ public enum EmailTemplate {
     WELCOME_EMAIL("WELCOME_EMAIL", "Welcome to Trading Platform",
             "<html><body><h1>Welcome!</h1><p>Hello, {name}! We're excited to have you on our platform.</p></body></html>"),
     TWO_FACTOR_AUTH("TWO_FACTOR_AUTH", "Two-Factor Authentication",
-            "<html><body><h1>Authentication Code</h1><p>Your authentication code is <b>{code}</b></p></body></html>");
-
+            "<html><body><h1>Authentication Code</h1><p>Your authentication code is <b>{code}</b></p></body></html>"),
+    REGISTER_OTP("REGISTER_OTP", "Verify Your Email",
+                         "<html><body><h1>Verify Your Email</h1><p>Your OTP code is <b>{code}</b></p></body></html>");
     private final String code;
     private final String subjectTemplate;
     private final String bodyTemplate;

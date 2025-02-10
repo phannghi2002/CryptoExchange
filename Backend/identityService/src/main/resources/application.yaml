@@ -1,7 +1,12 @@
 spring:
   application:
     name: identityService
-  
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+
 
   data:
     redis:
@@ -25,7 +30,7 @@ spring:
 
 jwt:
   signerKey: Os1s6shIo1Cit3j+LWqRjlEjCu8wytD3tQFeIR6Opv1Qec+uafoNtUu1zWyvhVue
-  valid-duration: 3600 # in second
+  valid-duration: 36000 # in second
   refreshable-duration: 36000 # in seconds
 
 server:

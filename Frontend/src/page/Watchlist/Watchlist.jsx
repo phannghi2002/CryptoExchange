@@ -1,4 +1,5 @@
-import { addItemToWatchlist, getUserWatchlist } from "@/State/Watchlist/Action";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { getUserWatchlist, toggleToWatchlist } from "@/State/Watchlist/Action";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,13 +13,17 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { BookmarkFilledIcon } from "@radix-ui/react-icons";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function Watchlist() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { watchlist } = useSelector((store) => store);
-  console.log("WAtch list ne", watchlist);
-  const handleRemoveToWatchlist = (value) => {
-    dispatch(addItemToWatchlist(value));
+  console.log("WAtch list ne", watchlist.watchlist);
+
+  const handleRemoveToWatchlist = async (coinId) => {
+    await dispatch(toggleToWatchlist(coinId));
+    dispatch(getUserWatchlist());
   };
 
   useEffect(() => {
@@ -30,42 +35,57 @@ function Watchlist() {
       <Table className="border">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[125px] py-5">Coin</TableHead>
+            <TableHead className="w-[185px] py-5">Coin</TableHead>
             <TableHead>SYMBOL</TableHead>
-            <TableHead>VOLUME</TableHead>
-            <TableHead>MARKET CAP</TableHead>
             <TableHead>24h</TableHead>
             <TableHead>PRICE</TableHead>
             <TableHead className="text-right">REMOVE</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {watchlist.items.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium flex items-center gap-2">
-                <Avatar className="-z-50">
-                  <AvatarImage src={item.image} />
-                </Avatar>
-                <span>{item.name}</span>
-              </TableCell>
-              <TableCell>{item.symbol}</TableCell>
-              <TableCell>{item.total_volume}</TableCell>
-              <TableCell>{item.market_cap}</TableCell>
-
-              <TableCell>{item.price_change_percentage_24h}</TableCell>
-              <TableCell>${item.current_price}</TableCell>
-              <TableCell className="text-right">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleRemoveToWatchlist(item.id)}
-                  size="icon"
-                  className="h-10 w-10"
+          {watchlist?.watchlist?.length > 0 ? (
+            watchlist?.watchlist.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell
+                  className="font-medium flex items-center gap-2"
+                  onClick={() => navigate(`/market/${item.id}`)}
                 >
-                  <BookmarkFilledIcon className="w-6 h-6" />
-                </Button>
+                  <Avatar className="-z-50 w-[40px]">
+                    <AvatarImage src={item.image} />
+                  </Avatar>
+                  <span>{item.name}</span>
+                </TableCell>
+                <TableCell>{item?.symbol?.toUpperCase()}</TableCell>
+
+                <TableCell
+                  style={{
+                    color:
+                      item.price_change_percentage_24h > 0 ? "green" : "red",
+                  }}
+                >
+                  {item.price_change_percentage_24h > 0 ? "+ " : ""}
+                  {item.price_change_percentage_24h}%
+                </TableCell>
+                <TableCell>${item.current_price}</TableCell>
+                <TableCell className="text-right">
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleRemoveToWatchlist(item.id)}
+                    size="icon"
+                    className="h-10 w-10"
+                  >
+                    <BookmarkFilledIcon className="w-6 h-6" />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-4">
+                Chưa có danh sách theo dõi
               </TableCell>
             </TableRow>
-          ))}
+          )}
         </TableBody>
       </Table>
     </div>

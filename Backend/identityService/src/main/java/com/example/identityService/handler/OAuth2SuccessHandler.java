@@ -5,6 +5,7 @@ import com.example.identityService.exception.AppException;
 import com.example.identityService.exception.ErrorCode;
 import com.example.identityService.repository.OAuthUserRepository;
 import com.example.identityService.repository.RoleRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
@@ -25,10 +26,7 @@ import java.io.IOException;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
 
 import org.springframework.util.CollectionUtils;
 
@@ -51,26 +49,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
     @Autowired
     private RoleRepository roleRepository;
 
-//    @Override
-//    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-//                                        Authentication authentication) throws IOException {
-//
-//        DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
-//        String email = oAuth2User.getAttribute("email");
-//
-//        OAuthUser oAuthUser = oAuthUserRepository.findByEmail(email)
-//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-//
-//        String token = generateOAuthToken(oAuthUser);
-//
-//        log.info("Generated OAuth Token: " + token);
-//        // Lưu vào session
-//        request.getSession().setAttribute("OAUTH_TOKEN", token);
-//
-//        // Redirect về trang chính
-//        getRedirectStrategy().sendRedirect(request, response, "http://localhost:5173/overview");
-//    }
-
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException {
@@ -86,17 +64,27 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
         // Lưu token vào cookie HttpOnly
         Cookie cookie = new Cookie("OAUTH_TOKEN", token);
-        cookie.setHttpOnly(true);
+
+
+        cookie.setHttpOnly(false);
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60); // 1 giờ
 
         response.addCookie(cookie);
 
+        // Lưu trạng thái twoAuth vào cookie (không HttpOnly để frontend truy cập)
+        Cookie twoAuthCookie = new Cookie("TWO_AUTH", String.valueOf(oAuthUser.getTwoAuth()));
+        //cai nay cho phep ben frontend co quyen thay doi nhu xoa cookies
+        twoAuthCookie.setHttpOnly(false); // Frontend có thể truy cập
+        twoAuthCookie.setPath("/");
+        twoAuthCookie.setMaxAge(60 * 60); // 1 giờ
+        response.addCookie(twoAuthCookie);
+
+        log.info("khó vcl ở chỗ này {}", String.valueOf(oAuthUser.getTwoAuth()));
         // Redirect về frontend
         getRedirectStrategy().sendRedirect(request, response,
                 "http://localhost:5173/overview");
     }
-
 
     private String buildOAuthScope(OAuthUser oAuthUser) {
         StringJoiner stringJoiner = new StringJoiner(" ");
@@ -126,6 +114,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                 .claim("scope", buildOAuthScope(oAuthUser))  // Scope từ OAuth provider
                 .claim("userId", oAuthUser.getId())
                 .claim("providerId", oAuthUser.getProviderId())
+                .claim("twoAuth", oAuthUser.getTwoAuth())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());

@@ -23,4 +23,8 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     Set<Role> roles;
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    Boolean twoAuth = false;
+
 }

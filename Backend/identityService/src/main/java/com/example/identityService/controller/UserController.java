@@ -3,9 +3,7 @@ package com.example.identityService.controller;
 import java.util.List;
 
 
-import com.example.identityService.dto.request.EmailRequest;
-import com.example.identityService.dto.request.UserCreationRequest;
-import com.example.identityService.dto.request.UserUpdateRequest;
+import com.example.identityService.dto.request.*;
 import com.example.identityService.dto.response.ApiResponse;
 import com.example.identityService.dto.response.UserResponse;
 import com.example.identityService.service.UserService;
@@ -38,6 +36,21 @@ public class UserController {
         userService.forgotPassword(request.getEmail());
         return ApiResponse.<String>builder()
                 .result("Mã code đã được gửi tới email của bạn.")
+                .build();
+    }
+
+    @PostMapping("/updatePassword")
+    ApiResponse<String> updatePassword(@RequestBody UpdatePasswordRequest request) {
+        userService.updatePassword(request);
+        return ApiResponse.<String>builder()
+                .result("Cập nhật mật khẩu thành công")
+                .build();
+    }
+
+    @PostMapping("/changePassword")
+    ApiResponse<UserResponse> changePasswordEnterOldPassword(@RequestBody ChangePasswordEnterOldPasswordRequest request) {
+        return ApiResponse.<UserResponse>builder()
+                .result( userService.changePasswordEnterOldPassword(request.getOldPassword(), request.getNewPassword()))
                 .build();
     }
 
@@ -74,4 +87,13 @@ public class UserController {
                 .result(userService.updateUser(userId, request))
                 .build();
     }
+
+    @PutMapping("/convertTwoAuth")
+    public ApiResponse<UserResponse> convert2FA() {
+        UserResponse updatedUser = userService.convert2FA();
+        return ApiResponse.<UserResponse>builder()
+                .result(updatedUser)
+                .build();
+    }
+
 }

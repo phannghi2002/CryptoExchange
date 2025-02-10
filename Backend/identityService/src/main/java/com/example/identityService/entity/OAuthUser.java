@@ -33,4 +33,7 @@ public class OAuthUser {
     Set<Role> roles = new HashSet<>();
 
     LocalDateTime createdAt;
+
+    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
+    Boolean twoAuth = false;
 }

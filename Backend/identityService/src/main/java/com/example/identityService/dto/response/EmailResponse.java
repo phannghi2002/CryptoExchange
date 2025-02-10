@@ -1,7 +1,5 @@
 package com.example.identityService.dto.response;
 
-import java.util.Date;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -10,8 +8,6 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AuthenticationResponse {
-    String token;
-    Date expiryTime;
-    Boolean twoAuth;
+public class EmailResponse {
+    String email;
 }

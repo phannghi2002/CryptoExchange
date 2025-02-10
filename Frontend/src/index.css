@@ -67,3 +67,44 @@
     @apply dark bg-background text-foreground;
   }
 }
+
+/*
+ @layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: 0 0 0; 
+    --card: 255 255 255;
+    --card-foreground: 0 0 0;
+    --popover: 255 255 255;
+    --popover-foreground: 0 0 0;
+    --primary: 0 0 0; 
+    --primary-foreground: 255 255 255; 
+    --secondary: 240 240 240; 
+    --secondary-foreground: 0 0 0; 
+    --muted: 240 240 240;
+    --muted-foreground: 100 100 100;
+    --accent: 230 230 230;
+    --accent-foreground: 50 50 50;
+    --destructive: 255 99 99; 
+    --destructive-foreground: 255 255 255;
+    --border: 0 0 0; 
+    --input: 240 240 240;
+    --ring: 0 0 0; 
+    --radius: 0.5rem;
+
+   
+    --chart-1: 220 90% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+
+ 
+  body {
+    @apply bg-background text-foreground;
+  }
+  * {
+    @apply border-border;
+  }
+} */

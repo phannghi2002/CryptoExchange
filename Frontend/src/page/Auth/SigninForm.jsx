@@ -1,4 +1,10 @@
-import { login } from "@/State/Auth/Action";
+import {
+  clearError,
+  getEmailFromToken,
+  getUser,
+  login,
+  loginWithGG,
+} from "@/State/Auth/Action";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -8,15 +14,20 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function SigninForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false); // State để điều khiển hiển thị mật khẩu
+
+  const { auth } = useSelector((store) => store);
+  const [error, setError] = useState("");
 
   const form = useForm({
     resolver: "",
@@ -25,19 +36,32 @@ function SigninForm() {
       password: "",
     },
   });
-  const onSubmit = (data) => {
-    dispatch(login({ data, navigate }));
-    console.log(data);
+  // const onSubmit = (data) => {
+  //   dispatch(login({ data, navigate }));
+  //   console.log(data);
+  //   dispatch(getUser(localStorage.getItem("token")));
+  // };
+
+  const onSubmit = async (data) => {
+    const result = await dispatch(login({ data, navigate }));
+
+    console.log("in ra result xem nào", result);
+    if (result.code !== 1000) {
+      setError(result.message); // Hiển thị lỗi nếu đăng nhập thất bại
+    } else {
+      dispatch(getUser(localStorage.getItem("token")));
+    }
   };
 
   const loginWithOauth = () => {
+    localStorage.setItem("loginGG", true);
     window.location.href =
       "http://localhost:8888/api/v1/identity/oauth2/authorization/google";
   };
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-center pb-3">Login</h1>
+      <h1 className="text-xl font-bold text-center pb-7">Login</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -51,6 +75,11 @@ function SigninForm() {
                     placeholder="Phannghi@gmai.com"
                     {...field}
                     className="border w-full border-gray-700 p-5"
+                    onChange={(e) => {
+                      field.onChange(e); // Cập nhật giá trị trong form
+                      // dispatch(clearError()); // Gọi hàm clearError
+                      setError("");
+                    }}
                   />
                 </FormControl>
 
@@ -62,24 +91,63 @@ function SigninForm() {
           <FormField
             control={form.control}
             name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="Your Password"
-                    {...field}
-                    className="border w-full border-gray-700 p-5"
-                  />
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormControl>
+                    <div className="relative">
+                      {" "}
+                      {/* Thêm container để gói các phần tử con */}
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Your Password"
+                        {...field}
+                        className="border w-full border-gray-700 p-5 pr-10" // Dành chỗ cho icon
+                        onChange={(e) => {
+                          field.onChange(e); // Cập nhật giá trị
+                          // dispatch(clearError()); // Gọi clearError
+                          setError("");
+                        }}
+                      />
+                      <div
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer  text-blue-600 hover:text-blue-800"
+                      >
+                        {showPassword ? <EyeNoneIcon /> : <EyeOpenIcon />}
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
-
-          <Button type="submit" className="w-full py-5">
-            Submit
+          {error && (
+            <div
+              style={{
+                marginTop: "8px",
+                marginBottom: "-12px",
+                color: "red",
+                textAlign: "center",
+              }}
+            >
+              {error}
+            </div>
+          )}
+          <Button type="submit" className="w-full py-5 mt-2">
+            Next
           </Button>
+
+          <p
+            className="flex items-center justify-center"
+            style={{ marginTop: "9px", marginBottom: "-10px" }}
+          >
+            <span className="flex-grow border-t border-white"></span>
+            <span className="mx-2" style={{ marginBottom: "4px" }}>
+              or
+            </span>
+            <span className="flex-grow border-t border-white"></span>
+          </p>
 
           <Button className="w-full py-5" onClick={loginWithOauth}>
             <svg
@@ -107,7 +175,7 @@ function SigninForm() {
                 d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
               ></path>
             </svg>
-            <span className="pl-2"> Sign in with Google</span>
+            <span className="pl-2"> Countinue with Google</span>
           </Button>
         </form>
       </Form>

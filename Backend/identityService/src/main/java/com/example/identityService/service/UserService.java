@@ -5,6 +5,7 @@ import java.util.*;
 
 //import com.example.event.dto.NotificationEvent;
 //import com.example.identityService.constant.EmailTemplate;
+import com.example.identityService.dto.request.UpdatePasswordRequest;
 import com.example.identityService.dto.response.ApiResponse;
 import com.example.sharedLibrary.NotificationEvent;
 import com.example.sharedLibrary.EmailTemplate;
@@ -72,13 +73,20 @@ public class UserService {
         //goi den cac controller in profile
         profileClient.createProfile(profileRequest);
 
-        Map<String, Object> param = Map.of("name", profileRequest.getFirstName() + " " + profileRequest.getLastName());
+        // Tạo mã OTP
+        String code = randomCode();
+
+        // Lưu mã OTP vào Redis với TTL là 5 phút (300 giây)
+        otpService.saveOtp(request.getEmail(), "REGISTER_OTP", code, 1200);
+
+        // Tạo thông báo gửi qua Kafka
+        Map<String, Object> param = Map.of("code", code);
 
 
         NotificationEvent notificationEvent = NotificationEvent.builder()
                 .channel("EMAIL")
                 .recipient(request.getEmail())
-                .template(EmailTemplate.WELCOME_EMAIL)
+                .template(EmailTemplate.REGISTER_OTP)
                 .param(param)
                 .build();
         //publish message to kafka
@@ -95,23 +103,6 @@ public class UserService {
         // Chuyển số nguyên thành chuỗi và trả về
         return String.valueOf(code);
     }
-
-//    public void forgotPassword(String email) {
-//        if (!userRepository.existsByEmail(email)) throw new AppException(ErrorCode.USER_NOT_EXISTED);
-//
-//        String code = randomCode();
-//        Map<String, Object> param = Map.of("code", code);
-//
-//        NotificationEvent notificationEvent = NotificationEvent.builder()
-//                .channel("EMAIL")
-//                .recipient(email)
-//                .template(EmailTemplate.FORGOT_PASSWORD)
-//                .param(param)
-//                .build();
-//        //publish message to kafka
-//        kafkaTemplate.send("notification-delivery", notificationEvent);
-//
-//    }
 
     public void forgotPassword(String email) {
         // Kiểm tra xem email có tồn tại không
@@ -157,6 +148,28 @@ public class UserService {
                 .build();
     }
 
+    public ApiResponse<Void> welcomeTradingPlatform(String email, String firstName, String lastName) {
+        // Kiểm tra xem email có tồn tại không
+        if (!userRepository.existsByEmail(email)) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        Map<String, Object> param = Map.of("name", firstName + " " + lastName);
+
+        NotificationEvent notificationEvent = NotificationEvent.builder()
+                .channel("EMAIL")
+                .recipient(email)
+                .template(EmailTemplate.WELCOME_EMAIL)
+                .param(param)
+                .build();
+
+
+        // Gửi thông báo qua Kafka
+        kafkaTemplate.send("notification-delivery", notificationEvent);
+        return ApiResponse.<Void>builder()
+                .message("Đã gửi email chào mừng đến quý khách.")
+                .build();
+    }
+
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
         String name = context.getAuthentication().getName();
@@ -165,6 +178,49 @@ public class UserService {
 
         return userMapper.toUserResponse(user);
     }
+
+    public UserResponse updatePassword(UpdatePasswordRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        return userMapper.toUserResponse(userRepository.save(user));
+    }
+
+    public UserResponse convert2FA() {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+        User user = userRepository.findByEmail(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Chuyển đổi trạng thái twoAuth
+        user.setTwoAuth(!Boolean.TRUE.equals(user.getTwoAuth()));
+
+        // Lưu thay đổi và trả về UserResponse
+        User updatedUser = userRepository.save(user);
+
+        return userMapper.toUserResponse(updatedUser);
+    }
+
+    public UserResponse changePasswordEnterOldPassword(String oldPassword, String newPassword) {
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+
+
+        User user = userRepository.findByEmail(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        // Kiểm tra mật khẩu cũ
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new AppException(ErrorCode.INVALID_OLD_PASSWORD);
+        }
+
+        // Cập nhật mật khẩu mới (mã hóa trước khi lưu)
+        user.setPassword(passwordEncoder.encode(newPassword));
+        User updatedUser = userRepository.save(user);
+
+        return userMapper.toUserResponse(updatedUser);
+    }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     public UserResponse updateUser(String userId, UserUpdateRequest request) {

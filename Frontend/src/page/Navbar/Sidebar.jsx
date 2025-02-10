@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const menu = [
-  { name: "Home", path: "/", icon: <HomeIcon className="h-6 w-6" /> },
+  { name: "Home", path: "/overview", icon: <HomeIcon className="h-6 w-6" /> },
   {
     name: "Portfolio",
     path: "/portfolio",
@@ -47,16 +47,29 @@ const menu = [
     path: "/profile",
     icon: <PersonIcon className="h-6 w-6" />,
   },
-  { name: "Logout", path: "/", icon: <ExitIcon className="h-6 w-6" /> },
+  { name: "Logout", path: "/overview", icon: <ExitIcon className="h-6 w-6" /> },
 ];
 
 function Sidebar() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  const hanldeLogout = () => {
-    dispatch(logout());
+  // const hanldeLogout = () => {
+  //   dispatch(logout());
+  //   document.cookie =
+  //     "TWO_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  // };
+
+  const hanldeLogout = async () => {
+    await dispatch(logout());
+    document.cookie =
+      "OAUTH_TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie =
+      "TWO_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    navigate("/overview"); // Điều hướng sau khi logout
   };
+
   return (
     <div className="mt-10 space-y-5">
       <div>
