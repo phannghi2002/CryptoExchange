@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -76,6 +77,12 @@ public class CoinController {
         List<Coin> coins = coinService.getCoinsByIds(ids);
         List<CoinSendWatchListResponse> response = coinSendWatchListMapper.toCoinSendWatchListList(coins);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/exchange-rate")
+    ResponseEntity<Map<String, Double>> getExchangeRates(@RequestParam List<String>symbols) {
+        Map<String, Double> exchangeRates = coinService.getExchangeRates(symbols);
+        return ResponseEntity.ok(exchangeRates);
     }
 }
 

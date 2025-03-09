@@ -1,6 +1,5 @@
 package com.example.watchListService.repository.httpclient;
 
-import com.example.watchListService.dto.response.ApiResponse;
 import com.example.watchListService.dto.response.CoinResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

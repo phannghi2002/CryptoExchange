@@ -11,8 +11,6 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
-notification:
-  email:
 
 
 server:

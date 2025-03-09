@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.Document;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,15 @@ public interface CoinRepository extends MongoRepository<Coin, String>, PagingAnd
 
     @Query("{ '_id': { '$in': ?0 } }")
     List<Coin> findByCoinIdIn(List<String> coinIds);
+
+//    @Query("{ 'symbol': { '$in': ?0, '$options': 'i' } }") // i ko phân biệt hoa thường
+//    List<Coin> findBySymbolIn(List<String> symbols);
+
+
+    // Case-insensitive search by symbols (using method name convention)
+    List<Coin> findBySymbolInIgnoreCase(List<String> symbols);
+
+
 
 
 }

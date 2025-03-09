@@ -13,6 +13,12 @@
         <option value="$PROJECT_DIR$/Backend/notificationService/pom.xml" />
         <option value="$PROJECT_DIR$/Backend/shared-library/pom.xml" />
         <option value="$PROJECT_DIR$/Backend/sharedLibrary/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/paymentService/paymentService/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/paymentService/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/walletService/walletService/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/walletService/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/transactionService/pom.xml" />
+        <option value="$PROJECT_DIR$/Backend/ordersService/pom.xml" />
       </list>
     </option>
   </component>

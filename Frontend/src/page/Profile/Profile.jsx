@@ -64,7 +64,8 @@ function Profile() {
       <div className="pt-10 w-full lg:w-[60%]">
         <Card>
           <CardHeader className="pb-9">
-            <CardTitle>Your Infomation</CardTitle>
+            {/* <CardTitle>Your Infomation</CardTitle> */}
+            <CardTitle>Thông tin của bạn</CardTitle>
           </CardHeader>
 
           {/* <CardContent>
@@ -105,12 +106,15 @@ function Profile() {
           <CardContent>
             <div className="grid grid-cols-2 gap-x-32 gap-y-8">
               <div className="flex">
-                <p className="w-[9rem]">First Name:</p>
+                {/* <p className="w-[9rem]">First Name:</p> */}
+                <p className="w-[9rem]">Họ:</p>
+
                 <p className="text-gray-500">{auth.user?.firstName}</p>
               </div>
 
               <div className="flex">
-                <p className="w-[9rem]">Last Name:</p>
+                {/* <p className="w-[9rem]">Last Name:</p> */}
+                <p className="w-[9rem]">Tên:</p>
                 <p className="text-gray-500">{auth.user?.lastName}</p>
               </div>
 
@@ -123,12 +127,16 @@ function Profile() {
               </div>
 
               <div className="flex">
-                <p className="w-[9rem]">Dob:</p>
+                {/* <p className="w-[9rem]">Dob:</p> */}
+                <p className="w-[9rem]">Ngày sinh: </p>
+
                 <p className="text-gray-500">{auth.user?.dob}</p>
               </div>
 
               <div className="flex">
-                <p className="w-[9rem]">City:</p>
+                {/* <p className="w-[9rem]">City:</p> */}
+                <p className="w-[9rem]">Quốc tịch:</p>
+
                 <p className="text-gray-500">{auth.user?.city}</p>
               </div>
             </div>
@@ -153,7 +161,8 @@ function Profile() {
           <Card className="w-full">
             <CardHeader className="pb-7">
               <div className="flex items-center gap-3">
-                <CardTitle>2 Step Verification</CardTitle>
+                {/* <CardTitle>2 Step Verification</CardTitle> */}
+                <CardTitle>Xác thực 2 yếu tố</CardTitle>
 
                 {showTwoAuth === true ? (
                   <Badge
@@ -161,7 +170,8 @@ function Profile() {
                     onClick={() => toggle2FA()}
                   >
                     <VerifiedIcon />
-                    <span>Enabled</span>
+                    {/* <span>Enabled</span> */}
+                    <span className="text-lg">Bật</span>
                   </Badge>
                 ) : (
                   <Badge
@@ -169,7 +179,8 @@ function Profile() {
                     onClick={() => toggle2FA()}
                   >
                     <BadgeXIcon />
-                    <span>Disable</span>
+                    {/* <span>Disable</span> */}
+                    <span className="text-lg">Tắt</span>
                   </Badge>
                 )}
               </div>

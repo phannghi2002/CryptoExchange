@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: paymentService
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/payment
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+
+server:
+  port: 8087
+  servlet:
+    context-path: /payment
+
+app:
+  services:
+    wallet: http://localhost:8088/wallet

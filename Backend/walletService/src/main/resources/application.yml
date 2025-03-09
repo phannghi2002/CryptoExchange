@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: walletService
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/wallet-service
+
+server:
+  port: 8088
+  servlet:
+    context-path: /wallet

@@ -36,11 +36,6 @@ function SigninForm() {
       password: "",
     },
   });
-  // const onSubmit = (data) => {
-  //   dispatch(login({ data, navigate }));
-  //   console.log(data);
-  //   dispatch(getUser(localStorage.getItem("token")));
-  // };
 
   const onSubmit = async (data) => {
     const result = await dispatch(login({ data, navigate }));
@@ -61,7 +56,8 @@ function SigninForm() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-center pb-7">Login</h1>
+      {/* <h1 className="text-xl font-bold text-center pb-7">Login</h1> */}
+      <h1 className="text-xl font-bold text-center pb-7">Đăng nhập</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -100,7 +96,8 @@ function SigninForm() {
                       {/* Thêm container để gói các phần tử con */}
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Your Password"
+                        // placeholder="Your Password"
+                        placeholder="Mật khẩu"
                         {...field}
                         className="border w-full border-gray-700 p-5 pr-10" // Dành chỗ cho icon
                         onChange={(e) => {
@@ -135,7 +132,8 @@ function SigninForm() {
             </div>
           )}
           <Button type="submit" className="w-full py-5 mt-2">
-            Next
+            {/* Next */}
+            Tiếp theo
           </Button>
 
           <p
@@ -144,7 +142,8 @@ function SigninForm() {
           >
             <span className="flex-grow border-t border-white"></span>
             <span className="mx-2" style={{ marginBottom: "4px" }}>
-              or
+              {/* or */}
+              hoặc
             </span>
             <span className="flex-grow border-t border-white"></span>
           </p>
@@ -175,7 +174,8 @@ function SigninForm() {
                 d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"
               ></path>
             </svg>
-            <span className="pl-2"> Countinue with Google</span>
+            {/* <span className="pl-2"> Countinue with Google</span> */}
+            <span className="pl-2"> Tiếp tục với Google</span>
           </Button>
         </form>
       </Form>

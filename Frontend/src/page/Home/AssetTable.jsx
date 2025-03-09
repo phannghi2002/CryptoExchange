@@ -20,7 +20,7 @@ const CoinRow = React.memo(({ item }) => {
     <TableRow key={item.id}>
       <TableCell
         className="font-medium flex items-center gap-2 px-4"
-        onClick={() => navigate(`/market/${item.id}`)}
+        onClick={() => navigate(`/stock/${item.id}`)}
       >
         <Avatar className="-z-50 w-8">
           <AvatarImage src={item.image} alt={`Image of ${item.name}`} />
@@ -56,11 +56,14 @@ function AssetTable({ coin = [], category }) {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[40%] px-4">Coin</TableHead>
-            <TableHead>SYMBOL</TableHead>
-            {/* <TableHead>VOLUME</TableHead>
-            <TableHead>MARKET CAP</TableHead> */}
-            <TableHead>24h</TableHead>
-            <TableHead className="text-right px-4">PRICE</TableHead>
+
+            {/* <TableHead>SYMBOL</TableHead> */}
+            <TableHead>Ký hiệu</TableHead>
+
+            {/* <TableHead>24h</TableHead> */}
+            <TableHead>Thay đổi 24h</TableHead>
+            {/* <TableHead className="text-right px-4">PRICE</TableHead> */}
+            <TableHead className="text-right px-4">Giá</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

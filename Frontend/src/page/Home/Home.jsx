@@ -288,7 +288,8 @@ function Home() {
                   variant={category == "all" ? "default" : "outline"}
                   className="rounded-full"
                 >
-                  All
+                  {/* All */}
+                  Tất cả
                 </Button>
 
                 <Button
@@ -296,6 +297,7 @@ function Home() {
                   variant={category == "top50" ? "default" : "outline"}
                   className="rounded-full"
                 >
+                  {/* Top 50 */}
                   Top 50
                 </Button>
 
@@ -304,7 +306,8 @@ function Home() {
                   variant={category == "topGainers" ? "default" : "outline"}
                   className="rounded-full"
                 >
-                  Top Gainers
+                  {/* Top Gainers */}
+                  Top tăng giá
                 </Button>
 
                 <Button
@@ -312,7 +315,8 @@ function Home() {
                   variant={category == "topLosers" ? "default" : "outline"}
                   className="rounded-full"
                 >
-                  Top Losers
+                  {/* Top Losers */}
+                  Top giảm giá
                 </Button>
 
                 <div className="relative flex items-center w-[20%] font-semibold">
@@ -321,7 +325,8 @@ function Home() {
                     variant="outline"
                     className="pl-10" // Add padding to make room for the icon
                     onClick={() => handleCategory("searchCoin")}
-                    placeholder="Search"
+                    // placeholder="Search"
+                    placeholder="Tìm kiếm"
                     value={searchTerm}
                     onChange={handleInputChange}
                   />

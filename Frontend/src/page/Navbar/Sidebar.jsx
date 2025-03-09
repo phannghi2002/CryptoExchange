@@ -2,63 +2,65 @@ import { logout } from "@/State/Auth/Action";
 import { Button } from "@/components/ui/button";
 import { SheetClose } from "@/components/ui/sheet";
 import {
-  ActivityLogIcon,
   BookmarkIcon,
   DashboardIcon,
   ExitIcon,
   HomeIcon,
   PersonIcon,
 } from "@radix-ui/react-icons";
-import { LandmarkIcon, PanelTopIcon, WalletIcon } from "lucide-react";
+import { AnchorIcon, HandshakeIcon, WalletIcon } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const menu = [
-  { name: "Home", path: "/overview", icon: <HomeIcon className="h-6 w-6" /> },
   {
-    name: "Portfolio",
-    path: "/portfolio",
+    name: "Trang chủ",
+    path: "/overview",
+    icon: <HomeIcon className="h-6 w-6" />,
+  },
+  {
+    name: "Xác thực Kyc ",
+    path: "/kyc",
     icon: <DashboardIcon className="h-6 w-6" />,
   },
   {
-    name: "Watchlist",
+    name: "Danh sách theo dõi",
     path: "/watchlist",
     icon: <BookmarkIcon className="h-6 w-6" />,
   },
   {
-    name: "Activity",
-    path: "/activity",
-    icon: <ActivityLogIcon className="h-6 w-6" />,
+    name: "Ví tiền",
+    path: "/wallet",
+    icon: <WalletIcon className="h-6 w-6" />,
   },
-  { name: "Wallet", path: "/wallet", icon: <WalletIcon className="h-6 w-6" /> },
+  {
+    name: "Đặt lệnh",
+    path: "/order",
+    icon: <AnchorIcon className="h-6 w-6" />,
+  },
 
   {
-    name: "Payment Details",
-    path: "/paymentdetails",
-    icon: <LandmarkIcon className="h-6 w-6" />,
+    name: "Thị trường",
+    path: "/market",
+    icon: <HandshakeIcon className="h-6 w-6" />,
   },
+
   {
-    name: "Withdrawal",
-    path: "/withdrawal",
-    icon: <PanelTopIcon className="h-6 w-6" />,
-  },
-  {
-    name: "Profile",
+    name: "Thông tin cá nhân",
     path: "/profile",
     icon: <PersonIcon className="h-6 w-6" />,
   },
-  { name: "Logout", path: "/overview", icon: <ExitIcon className="h-6 w-6" /> },
+  {
+    name: "Đăng xuất",
+    path: "/logout",
+    icon: <ExitIcon className="h-6 w-6" />,
+  },
 ];
 
 function Sidebar() {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-  // const hanldeLogout = () => {
-  //   dispatch(logout());
-  //   document.cookie =
-  //     "TWO_AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  // };
 
   const hanldeLogout = async () => {
     await dispatch(logout());
@@ -78,10 +80,11 @@ function Sidebar() {
             <Button
               key={index}
               variant="outline"
-              className="flex items-center gap-5 py-6 w-full"
+              className="flex items-center gap-8 py-6 w-full justify-start"
               onClick={() => {
                 navigate(item.path);
-                if (item.name == "Logout") {
+                // if (item.name == "Logout") {
+                if (item.name == "Đăng xuất") {
                   hanldeLogout();
                 }
               }}

@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: transactionService
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/transaction-service
+
+server:
+  port: 8089
+  servlet:
+    context-path: /transaction

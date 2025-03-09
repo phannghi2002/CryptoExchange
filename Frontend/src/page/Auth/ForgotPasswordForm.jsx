@@ -48,7 +48,8 @@ function ForgotPasswordForm() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-center pb-10">Forgot password</h1>
+      {/* <h1 className="text-xl font-bold text-center pb-10">Forgot password</h1> */}
+      <h1 className="text-xl font-bold text-center pb-10">Quên mật khẩu</h1>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -59,7 +60,8 @@ function ForgotPasswordForm() {
               <FormItem>
                 <FormControl>
                   <Input
-                    placeholder="Enter your email ..."
+                    // placeholder="Enter your email ..."
+                    placeholder="Nhập email của bạn ..."
                     {...field}
                     className="border w-full border-gray-700 p-5"
                     onChange={(e) => {
@@ -87,7 +89,8 @@ function ForgotPasswordForm() {
           )}
 
           <Button type="submit" className="w-full py-5">
-            Next
+            {/* Next */}
+            Tiếp theo
           </Button>
         </form>
       </Form>

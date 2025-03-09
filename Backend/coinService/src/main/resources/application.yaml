@@ -1,6 +1,4 @@
 spring:
-
-
   application:
     name: coinService
 
@@ -11,8 +9,6 @@ spring:
     redis:
       host: localhost
       port: 6379
-
-
 
 server:
   port: 8081

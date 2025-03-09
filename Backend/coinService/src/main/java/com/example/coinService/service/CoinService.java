@@ -14,8 +14,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.Document;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -114,5 +120,30 @@ public class CoinService {
     public List<Coin> getCoinsByIds(List<String> coinIds) {
         return coinRepository.findByCoinIdIn(coinIds);
     }
+
+//    public List<Coin> getCoinsByExchangeRate(List<String> coinIds) {
+//        return coinRepository.findByCoinIdIn(coinIds);
+//    }
+
+    public Map<String, Double> getExchangeRates(List<String> symbols) {
+        List<Coin> coins = coinRepository.findBySymbolInIgnoreCase(symbols);
+
+        return coins.stream()
+                .collect(Collectors.toMap(
+                        coin -> coin.getSymbol().toUpperCase(),
+                        coin -> {
+                            double basePrice = coin.getCurrent_price();
+                            double fluctuation = (Math.random() * 0.0002 - 0.0001) * basePrice; // Biến động từ -0.01% đến 0.01%
+                            // Làm tròn đến 3 chữ số thập phân
+                            return BigDecimal.valueOf(basePrice + fluctuation)
+                                    .setScale(3, RoundingMode.HALF_UP)
+                                    .doubleValue();
+                        }
+                ));
+    }
+
+
+
+
 
 }

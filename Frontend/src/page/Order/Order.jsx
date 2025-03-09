@@ -7,10 +7,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-function Withdrawal() {
+function Order() {
   return (
     <div className="px-5 lg:px-20">
-      <h1 className="font-bold text-3xl pb-5">Withdrawal</h1>
+      <h1 className="font-bold text-3xl pb-5">Market</h1>
       <Table className="border">
         <TableHeader>
           <TableRow>
@@ -39,4 +39,4 @@ function Withdrawal() {
   );
 }
 
-export default Withdrawal;
+export default Order;

@@ -118,7 +118,8 @@ export const ModalOTP = ({ isOpen, onClose, action, email, onSuccess }) => {
         {error && <div className="text-red-600">{error}</div>}
         {isTimeout && (
           <div className="mt-4">
-            OTP has expired.
+            {/* OTP has expired. */}
+            Mã OTP đã hết hạn
             <span
               className="text-blue-500 underline ml-2 cursor-pointer"
               onClick={() => {
@@ -129,7 +130,8 @@ export const ModalOTP = ({ isOpen, onClose, action, email, onSuccess }) => {
                 setOtp("");
               }}
             >
-              Send to OTP again ?
+              {/* Send to OTP again ? */}
+              Gửi lại mã OTP ?
             </span>
           </div>
         )}

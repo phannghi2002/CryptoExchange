@@ -1,11 +1,6 @@
 spring:
   application:
     name: identityService
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
 
 
   data:

@@ -105,7 +105,7 @@ export const getUser = () => async (dispatch) => {
 };
 export const logout = () => (dispatch) => {
   localStorage.clear();
-  console.log("m ko lam ophiar ko");
+
   dispatch({ type: LOGOUT_SUCCESS });
 };
 

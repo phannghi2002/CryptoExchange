@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: ordersService
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/order-service
+server:
+  port: 8090
+  servlet:
+    context-path: /order
+
+app:
+  services:
+    wallet: http://localhost:8088/wallet

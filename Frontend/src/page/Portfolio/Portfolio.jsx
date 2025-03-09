@@ -1,53 +1,36 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import IDSampleFront from "../../assets/image/ID_Sample_Front.jpg";
+import IDSampleBack from "../../assets/image/ID_Sample_Back.jpg";
+import faceID from "../../assets/image/face_id.jpg";
 
-function Portfolio() {
+import UploadFile from "../UploadFile/UploadFile";
+
+function Kyc() {
   return (
-    <div className="px-5 lg:px-20">
-      <h1 className="font-bold text-3xl pb-5">Portfolio</h1>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[125px]">Asset</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Unit</TableHead>
-            <TableHead>Change</TableHead>
-            <TableHead>Change%</TableHead>
+    <>
+      <h1>Tiến hành tính năng xác thực Kyc</h1>
 
-            <TableHead className="text-right">Value</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {[1, 1, 1, 111, 111, 11, 1].map((item, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium flex items-center gap-2">
-                <Avatar className="-z-50">
-                  <AvatarImage
-                    src="https://th.bing.com/th/id/OIP.s6Q43c6hfBySHW2j3K9PTAHaEo?w=242&h=180&c=7&r=0&o=5&pid=1.7"
-                    alt="Image Bitcoin"
-                  />
-                </Avatar>
-                <span>Bitcoin</span>
-              </TableCell>
-              <TableCell>BTC</TableCell>
-              <TableCell>4528375824358</TableCell>
-              <TableCell>4528375824358</TableCell>
+      <div className="flex justify-around mt-8">
+        <UploadFile
+          title="Tải hoặc kéo thả ảnh CCCD mặt trước của bạn"
+          sampleImage={IDSampleFront}
+          id="id-front"
+        />
 
-              <TableCell>-0.28878</TableCell>
-              <TableCell className="text-right">$250.00</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
+        <UploadFile
+          title="Tải hoặc kéo thả ảnh CCCD mặt sau của bạn"
+          sampleImage={IDSampleBack}
+          id="id-back"
+        />
+
+        <UploadFile
+          // title="Tải hoặc kéo thả ảnh chụp khuôn mặt của bạn"
+          title="Bật camera để xác thực khuôn mặt"
+          sampleImage={faceID}
+          id="id-face"
+        />
+      </div>
+    </>
   );
 }
 
-export default Portfolio;
+export default Kyc;

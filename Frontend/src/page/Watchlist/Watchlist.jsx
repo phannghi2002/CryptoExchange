@@ -31,15 +31,23 @@ function Watchlist() {
   }, []);
   return (
     <div className="px-5 lg:px-20">
-      <h1 className="font-bold text-3xl pb-5">Watchlist</h1>
+      {/* <h1 className="font-bold text-3xl pb-5">Watchlist</h1> */}
+      <h1 className="font-bold text-3xl pb-5">Danh sách theo dõi</h1>
+
       <Table className="border">
         <TableHeader>
           <TableRow>
             <TableHead className="w-[185px] py-5">Coin</TableHead>
-            <TableHead>SYMBOL</TableHead>
-            <TableHead>24h</TableHead>
-            <TableHead>PRICE</TableHead>
-            <TableHead className="text-right">REMOVE</TableHead>
+            {/* <TableHead>SYMBOL</TableHead> */}
+            <TableHead>Ký hiệu</TableHead>
+
+            {/* <TableHead>24h</TableHead> */}
+            <TableHead>Thay đổi 24h</TableHead>
+            {/* <TableHead>PRICE</TableHead> */}
+            <TableHead className="text-right px-4">Giá</TableHead>
+
+            {/* <TableHead className="text-right">REMOVE</TableHead> */}
+            <TableHead className="text-right">Xóa</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -48,7 +56,7 @@ function Watchlist() {
               <TableRow key={index}>
                 <TableCell
                   className="font-medium flex items-center gap-2"
-                  onClick={() => navigate(`/market/${item.id}`)}
+                  onClick={() => navigate(`/stock/${item.id}`)}
                 >
                   <Avatar className="-z-50 w-[40px]">
                     <AvatarImage src={item.image} />

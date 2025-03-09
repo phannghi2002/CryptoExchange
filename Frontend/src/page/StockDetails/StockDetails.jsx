@@ -19,7 +19,8 @@ function StockDetails() {
   const { coin, watchlist } = useSelector((store) => store);
 
   const { id } = useParams();
-
+  const token = localStorage.getItem("jwt");
+  const access_token = localStorage.getItem("access_token");
   useEffect(() => {
     if (id) {
       dispatch(resetCoinDetails());
@@ -68,15 +69,17 @@ function StockDetails() {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          <Button onClick={handleAddToWatchlist}>
-            {inWatchlist ? (
-              <BookmarkFilledIcon className="h-6 w-6" />
-            ) : (
-              <BookmarkIcon className="h-6 w-6" />
-            )}
-          </Button>
-        </div>
+        {(token || access_token) && (
+          <div className="flex items-center gap-4">
+            <Button onClick={handleAddToWatchlist}>
+              {inWatchlist ? (
+                <BookmarkFilledIcon className="h-6 w-6" />
+              ) : (
+                <BookmarkIcon className="h-6 w-6" />
+              )}
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="mt-14">

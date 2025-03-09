@@ -104,7 +104,8 @@ export const ModalUpdateUser = ({ isOpen, onClose }) => {
         <div className="space-y-6">
           <div className="grid grid-cols-3 items-center gap-4">
             <Label htmlFor="firstName" className="text-left col-span-1">
-              Frist Name
+              {/* Frist Name */}
+              Họ
             </Label>
 
             <div className="col-span-2">
@@ -120,7 +121,8 @@ export const ModalUpdateUser = ({ isOpen, onClose }) => {
 
           <div className="grid grid-cols-3 items-center gap-4">
             <Label htmlFor="lastName" className="text-left col-span-1">
-              Last Name
+              {/* Last Name */}
+              Tên
             </Label>
 
             <div className="col-span-2">
@@ -136,7 +138,8 @@ export const ModalUpdateUser = ({ isOpen, onClose }) => {
 
           <div className="grid grid-cols-3 items-center gap-4">
             <Label htmlFor="dob" className="text-left col-span-1">
-              Dob
+              {/* Dob */}
+              Ngày sinh
             </Label>
             <div className="col-span-2">
               <Input
@@ -153,7 +156,8 @@ export const ModalUpdateUser = ({ isOpen, onClose }) => {
 
           <div className="grid grid-cols-3 items-center gap-4">
             <Label htmlFor="confirm-password" className="text-left col-span-1">
-              Country
+              {/* Country */}
+              Quốc tịch
             </Label>
 
             <div className="col-span-2">
@@ -164,7 +168,8 @@ export const ModalUpdateUser = ({ isOpen, onClose }) => {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a country" />
+                  {/* <SelectValue placeholder="Select a country" /> */}
+                  <SelectValue placeholder="Chọn quốc tịch" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>

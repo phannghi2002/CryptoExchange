@@ -58,7 +58,9 @@ function SignupForm() {
 
   return (
     <div>
-      <h1 className="text-xl font-bold text-center pb-3">Create New Account</h1>
+      {/* <h1 className="text-xl font-bold text-center pb-3">Create New Account</h1> */}
+      <h1 className="text-xl font-bold text-center pb-3">Tạo tài khoản </h1>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="flex justify-between items-center">
@@ -69,7 +71,8 @@ function SignupForm() {
                 <FormItem className="w-full max-w-[48%]">
                   <FormControl>
                     <Input
-                      placeholder="First Name"
+                      // placeholder="First Name"
+                      placeholder="Họ"
                       {...field}
                       className="border  border-gray-700 p-5"
                       onChange={(e) => {
@@ -89,7 +92,8 @@ function SignupForm() {
                 <FormItem className="w-full max-w-[48%]">
                   <FormControl>
                     <Input
-                      placeholder="Last Name"
+                      // placeholder="Last Name"
+                      placeholder="Tên"
                       {...field}
                       className="border border-gray-700 p-5"
                       onChange={(e) => {
@@ -137,7 +141,8 @@ function SignupForm() {
                       {/* Thêm container để gói các phần tử con */}
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="Your Password"
+                        // placeholder="Your Password"
+                        placeholder="Mật khẩu"
                         {...field}
                         className="border w-full border-gray-700 p-5 pr-10" // Dành chỗ cho icon
                         onChange={(e) => {
@@ -172,7 +177,7 @@ function SignupForm() {
             </div>
           )}
           <Button type="submit" className="w-full py-5">
-            Next
+            Tiếp theo
           </Button>
         </form>
       </Form>
