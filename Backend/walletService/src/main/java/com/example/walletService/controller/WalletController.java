@@ -1,5 +1,6 @@
 package com.example.walletService.controller;
 
+import com.example.walletService.dto.request.ChangeCoinRequest;
 import com.example.walletService.dto.request.WalletUpdateRequest;
 import com.example.walletService.dto.request.WalletUpdateTradeRequest;
 import com.example.walletService.entity.Wallets;
@@ -48,5 +49,26 @@ public class WalletController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PutMapping("/substract-coin/{userId}")
+    public ResponseEntity<?> substractCoinWallet(@PathVariable String userId, @RequestBody ChangeCoinRequest request) {
+        try {
+            Wallets substractCoinWallet = walletService.substractCoinWallet(userId, request);
+            return ResponseEntity.ok(substractCoinWallet);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/add-coin/{userId}")
+    public ResponseEntity<?> returnCoinWallet(@PathVariable String userId, @RequestBody ChangeCoinRequest request) {
+        try {
+            Wallets returnCoinWallet = walletService.returnCoinWallet(userId, request);
+            return ResponseEntity.ok(returnCoinWallet);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }
 

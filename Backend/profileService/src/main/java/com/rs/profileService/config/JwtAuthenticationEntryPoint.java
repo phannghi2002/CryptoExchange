@@ -17,7 +17,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(
             HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException {
-//        ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
 
         ErrorCode errorCode = ErrorCode.UNAUTHENTICATED;
 

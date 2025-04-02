@@ -78,8 +78,8 @@ public class OcrService {
                             .build();
                 }
             } else if ("id-back".equalsIgnoreCase(imageId)) {
-                // Kiểm tra mặt sau: Phải có "IDVNM"
-                boolean containsIDVNM = cleanedText.contains("IDVNM");
+                // Kiểm tra mặt sau: Phải có "VNM"
+                boolean containsIDVNM = cleanedText.contains("VNM");
 
                 if (containsIDVNM) {
                     return ApiResponse.<String>builder()

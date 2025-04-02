@@ -128,19 +128,34 @@ public class CoinService {
     public Map<String, Double> getExchangeRates(List<String> symbols) {
         List<Coin> coins = coinRepository.findBySymbolInIgnoreCase(symbols);
 
-        return coins.stream()
+        log.info("in coin {}", coins);
+
+        // Lọc chỉ giữ 1 bản ghi duy nhất cho mỗi symbol, ưu tiên id = "tether"
+        Map<String, Coin> uniqueCoins = coins.stream()
                 .collect(Collectors.toMap(
-                        coin -> coin.getSymbol().toUpperCase(),
-                        coin -> {
-                            double basePrice = coin.getCurrent_price();
-                            double fluctuation = (Math.random() * 0.0002 - 0.0001) * basePrice; // Biến động từ -0.01% đến 0.01%
-                            // Làm tròn đến 3 chữ số thập phân
+                        coin -> coin.getSymbol().toUpperCase(), // key
+                        coin -> coin, // value
+                        (existing, replacement) -> {
+                            // Ưu tiên bản ghi có id là "tether"
+                            if ("tether".equalsIgnoreCase(existing.getId())) return existing;
+                            if ("tether".equalsIgnoreCase(replacement.getId())) return replacement;
+                            return existing; // giữ cái đầu tiên nếu cả hai đều không phải tether
+                        }
+                ));
+
+        return uniqueCoins.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            double basePrice = entry.getValue().getCurrent_price();
+                            double fluctuation = (Math.random() * 0.0002 - 0.0001) * basePrice; // ±0.01%
                             return BigDecimal.valueOf(basePrice + fluctuation)
                                     .setScale(3, RoundingMode.HALF_UP)
                                     .doubleValue();
                         }
                 ));
     }
+
 
 
 

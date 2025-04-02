@@ -11,7 +11,7 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
-
+notification:
 
 server:
   port: 8086

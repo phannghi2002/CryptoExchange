@@ -7,7 +7,9 @@ import UploadFile from "../UploadFile/UploadFile";
 function Kyc() {
   return (
     <>
-      <h1>Tiến hành tính năng xác thực Kyc</h1>
+      <h1 className="font-bold text-3xl p-5">
+        Tiến hành tính năng xác thực Kyc
+      </h1>
 
       <div className="flex justify-around mt-8">
         <UploadFile

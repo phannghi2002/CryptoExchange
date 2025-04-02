@@ -6,6 +6,14 @@
     <file url="file://$PROJECT_DIR$/chatAIService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/coinService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/identityService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/notificationService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ordersService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/paymentService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/profileService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/sharedLibrary/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/transactionService/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/userService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/walletService/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/watchListService/src/main/java" charset="UTF-8" />
   </component>
 </project>

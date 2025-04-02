@@ -18,6 +18,5 @@ public class TransactionSwapRequest {
     String targetCoin;
     BigDecimal targetAmount;
     BigDecimal targetPrice;
-
 }
 

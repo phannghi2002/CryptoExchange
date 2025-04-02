@@ -1,13 +1,9 @@
 package com.example.notificationService.controller;
 
-//import com.example.event.dto.NotificationEvent;
-
-
 import com.example.notificationService.dto.request.Recipient;
 import com.example.notificationService.dto.request.SendEmailRequest;
 import com.example.notificationService.service.EmailService;
 
-import com.example.sharedLibrary.EmailTemplate;
 import com.example.sharedLibrary.NotificationEvent;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

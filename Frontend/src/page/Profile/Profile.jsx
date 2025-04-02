@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
   getEmailFromToken,
+  getUser,
   toggle2FAOAuthUser,
   toggle2FAUser,
 } from "@/State/Auth/Action";
@@ -39,6 +40,7 @@ function Profile() {
     // Kiểm tra nếu có JWT trong localStorage
     const token = localStorage.getItem("jwt");
     setHasJwt(!!token);
+    // dispatch(getUser());
   }, []);
 
   const [openModalUpdate, setOpenModalUpdate] = useState(false);

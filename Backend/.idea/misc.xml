@@ -10,6 +10,14 @@
         <option value="$PROJECT_DIR$/chatAIService/chatAIService/pom.xml" />
         <option value="$PROJECT_DIR$/identityService/pom.xml" />
         <option value="$PROJECT_DIR$/apiGateway/pom.xml" />
+        <option value="$PROJECT_DIR$/notificationService/pom.xml" />
+        <option value="$PROJECT_DIR$/ordersService/pom.xml" />
+        <option value="$PROJECT_DIR$/paymentService/pom.xml" />
+        <option value="$PROJECT_DIR$/profileService/pom.xml" />
+        <option value="$PROJECT_DIR$/sharedLibrary/pom.xml" />
+        <option value="$PROJECT_DIR$/transactionService/pom.xml" />
+        <option value="$PROJECT_DIR$/walletService/pom.xml" />
+        <option value="$PROJECT_DIR$/watchListService/pom.xml" />
       </list>
     </option>
   </component>

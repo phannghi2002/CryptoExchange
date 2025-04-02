@@ -1,6 +1,7 @@
 package com.example.walletService.service;
 
 import com.example.walletService.constant.TransactionType;
+import com.example.walletService.dto.request.ChangeCoinRequest;
 import com.example.walletService.dto.request.WalletUpdateRequest;
 import com.example.walletService.dto.request.WalletUpdateTradeRequest;
 import com.example.walletService.entity.Wallets;
@@ -10,7 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiFunction;
 
 @Service
 public class WalletService {
@@ -27,8 +32,18 @@ public class WalletService {
                         .updatedAt(LocalDateTime.now())
                         .build());
 
-        // Nếu là giao dịch SWAP
-        if (request.getTransactionType() == TransactionType.SWAP) {
+//        // Nếu là giao dịch SWAP
+//        if (request.getTransactionType() == TransactionType.SWAP) {
+//            if (request.getOriginCurrency() != null && request.getTargetCurrency() != null &&
+//                    request.getOriginAmount() != null && request.getTargetAmount() != null) {
+//                processSwap(wallet, request);
+//            } else {
+//                throw new IllegalArgumentException("Thông tin hoán đổi không hợp lệ.");
+//            }
+//        }
+
+        // Nếu là giao dịch SWAP HOẶC SWAP_ORDER_LIMIT
+        if (request.getTransactionType() == TransactionType.SWAP_ORDER_LIMIT || request.getTransactionType() == TransactionType.SWAP) {
             if (request.getOriginCurrency() != null && request.getTargetCurrency() != null &&
                     request.getOriginAmount() != null && request.getTargetAmount() != null) {
                 processSwap(wallet, request);
@@ -69,8 +84,12 @@ public class WalletService {
                         .add(request.getTargetAmount())
         );
 
-        // 🔥 Xóa các coin có số dư < THRESHOLD
+        //  Xóa các coin có số dư < THRESHOLD
         cryptoBalance.entrySet().removeIf(entry -> entry.getValue().abs().compareTo(THRESHOLD) < 0);
+
+        if(request.getTransactionType() ==  TransactionType.SWAP_ORDER_LIMIT){
+
+        }
     }
 
     private static final BigDecimal THRESHOLD = new BigDecimal("1E-6"); // Ngưỡng tối thiểu
@@ -132,8 +151,9 @@ public class WalletService {
         BigDecimal buyerCryptoBalance = buyerWallet.getCryptoBalance().getOrDefault(request.getCryptoType(), BigDecimal.ZERO);
         buyerWallet.getCryptoBalance().put(request.getCryptoType(), buyerCryptoBalance.add(request.getAmountCrypto()));
 
-        // Cập nhật số dư crypto của người bán (trừ crypto)
-        sellerWallet.getCryptoBalance().put(request.getCryptoType(), sellerCryptoBalance.subtract(request.getAmountCrypto()));
+        //khong can tru tien nua tai vi khi dat lenh thi ta da tru tien roi
+//        // Cập nhật số dư crypto của người bán (trừ crypto)
+//        sellerWallet.getCryptoBalance().put(request.getCryptoType(), sellerCryptoBalance.subtract(request.getAmountCrypto()));
 
         // Cập nhật thời gian
         buyerWallet.setUpdatedAt(LocalDateTime.now());
@@ -147,4 +167,104 @@ public class WalletService {
         return Arrays.asList(buyerWallet, sellerWallet);
     }
 
+//    public Wallets substractCoinWallet(String userId, ChangeCoinRequest request) {
+//        Wallets wallet = walletsRepository.findByUserId(userId)
+//                .orElse(null);
+//
+//        if (wallet == null) {
+//            // Xử lý trường hợp wallet không tồn tại
+//            return null; // Hoặc throw exception
+//        }
+//
+//        Map<String, BigDecimal> cryptoBalance = wallet.getCryptoBalance();
+//        String currency = request.getCurrency();
+//        BigDecimal amount = request.getAmount();
+//
+//        if (cryptoBalance.containsKey(currency)) {
+//            BigDecimal currentBalance = cryptoBalance.get(currency);
+//            BigDecimal newBalance = currentBalance.subtract(amount);
+//
+//            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+//                // Xử lý trường hợp số dư không đủ
+//                return null; // Hoặc throw exception
+//            }
+//
+//            cryptoBalance.put(currency, newBalance);
+//            wallet.setCryptoBalance(cryptoBalance);
+//            return walletsRepository.save(wallet);
+//        } else {
+//            // Xử lý trường hợp currency không tồn tại trong cryptoBalance
+//            return null; // Hoặc throw exception
+//        }
+//    }
+//
+//    public Wallets returnCoinWallet(String userId, ChangeCoinRequest request) {
+//        Wallets wallet = walletsRepository.findByUserId(userId)
+//                .orElse(null);
+//
+//        if (wallet == null) {
+//            // Xử lý trường hợp wallet không tồn tại
+//            return null; // Hoặc throw exception
+//        }
+//
+//        Map<String, BigDecimal> cryptoBalance = wallet.getCryptoBalance();
+//        String currency = request.getCurrency();
+//        BigDecimal amount = request.getAmount();
+//
+//        if (cryptoBalance.containsKey(currency)) {
+//            BigDecimal currentBalance = cryptoBalance.get(currency);
+//            BigDecimal newBalance = currentBalance.add(amount);
+//
+//            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+//                // Xử lý trường hợp số dư không đủ
+//                return null; // Hoặc throw exception
+//            }
+//
+//            cryptoBalance.put(currency, newBalance);
+//            wallet.setCryptoBalance(cryptoBalance);
+//            return walletsRepository.save(wallet);
+//        } else {
+//            // Xử lý trường hợp currency không tồn tại trong cryptoBalance
+//            return null; // Hoặc throw exception
+//        }
+//    }
+
+    public Wallets changeCoinWallet(String userId, ChangeCoinRequest request, BiFunction<BigDecimal, BigDecimal, BigDecimal> operation) {
+        Wallets wallet = walletsRepository.findByUserId(userId)
+                .orElse(null);
+
+        if (wallet == null) {
+            // Xử lý trường hợp wallet không tồn tại
+            return null; // Hoặc throw exception
+        }
+
+        Map<String, BigDecimal> cryptoBalance = wallet.getCryptoBalance();
+        String currency = request.getCurrency();
+        BigDecimal amount = request.getAmount();
+
+        if (cryptoBalance.containsKey(currency)) {
+            BigDecimal currentBalance = cryptoBalance.get(currency);
+            BigDecimal newBalance = operation.apply(currentBalance, amount);
+
+            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                // Xử lý trường hợp số dư không đủ
+                return null; // Hoặc throw exception
+            }
+
+            cryptoBalance.put(currency, newBalance);
+            wallet.setCryptoBalance(cryptoBalance);
+            return walletsRepository.save(wallet);
+        } else {
+            // Xử lý trường hợp currency không tồn tại trong cryptoBalance
+            return null; // Hoặc throw exception
+        }
+    }
+
+    public Wallets substractCoinWallet(String userId, ChangeCoinRequest request) {
+        return changeCoinWallet(userId, request, BigDecimal::subtract);
+    }
+
+    public Wallets returnCoinWallet(String userId, ChangeCoinRequest request) {
+        return changeCoinWallet(userId, request, BigDecimal::add);
+    }
 }

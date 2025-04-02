@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -63,6 +65,17 @@ public class MarketChartService {
             System.err.println("Unexpected error: " + e.getMessage());
             return marketChartRepository.findById(coinId);
         }
+    }
+
+    public List<Double> getFirst100Prices1Day(String coinId) {
+        MarketChart marketChart = marketChartRepository.findById(coinId).orElse(null);
+        if (marketChart != null && marketChart.getPrices1days() != null) {
+            return marketChart.getPrices1days().stream()
+                    .limit(100)  // Lấy 50 phần tử đầu tiên
+                    .map(price -> price.get(1))  // Chỉ lấy giá trị thứ hai (giá)
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();  // Trả về danh sách rỗng nếu không tìm thấy
     }
 
 }

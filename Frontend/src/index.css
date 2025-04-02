@@ -108,3 +108,15 @@
     @apply border-border;
   }
 } */
+
+/* Ẩn spinner trên Chrome, Safari */
+input[type="number"].remove-arrow::-webkit-inner-spin-button,
+input[type="number"].remove-arrow::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Ẩn spinner trên Firefox */
+input[type="number"].remove-arrow {
+  -moz-appearance: textfield;
+}

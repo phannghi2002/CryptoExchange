@@ -37,4 +37,5 @@ public class Order {
     BigDecimal minimum;
     BigDecimal maximum;
 
+    String policy;
 }

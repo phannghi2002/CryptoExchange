@@ -29,26 +29,40 @@ import TransferForm from "./TransferForm";
 import { useDispatch, useSelector } from "react-redux";
 import { getBalanceWallet, getHistoryWalletFiat } from "@/State/Wallet/Action";
 import { getHistoryTransactionSwap } from "@/State/Transaction/Action";
+import { getUser } from "@/State/Auth/Action";
 
 function Wallet() {
   const navigate = useNavigate();
 
   const handleDepositClick = () => {
-    navigate("/vnpay", { state: { orderInfo: "DEPOSIT" } });
+    navigate("/vnpay", {
+      state: { orderInfo: "DEPOSIT", userId: auth.user?.userId },
+    });
   };
 
   const handleWithdrawClick = () => {
-    navigate("/vnpay", { state: { orderInfo: "WITHDRAW" } });
+    navigate("/vnpay", {
+      state: { orderInfo: "WITHDRAW", userId: auth.user?.userId },
+    });
   };
 
   const dispatch = useDispatch();
-  const { wallet, transaction } = useSelector((store) => store);
+  const { auth, wallet, transaction } = useSelector((store) => store);
+
+  const access_token = localStorage.getItem("access_token");
+  const token = localStorage.getItem("jwt");
 
   useEffect(() => {
-    dispatch(getHistoryWalletFiat());
-    dispatch(getHistoryTransactionSwap("user123"));
-    dispatch(getBalanceWallet());
-  }, [dispatch]);
+    dispatch(getUser(auth.jwt || token || access_token));
+  }, [dispatch, auth.jwt, token, access_token]);
+
+  useEffect(() => {
+    if (auth.user?.userId) {
+      dispatch(getHistoryWalletFiat(auth.user.userId));
+      dispatch(getHistoryTransactionSwap(auth.user.userId));
+      dispatch(getBalanceWallet(auth.user.userId));
+    }
+  }, [dispatch, auth.user?.userId]);
 
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
@@ -202,7 +216,7 @@ function Wallet() {
             {/* <UpdateIcon className="h-7 w-1/3 p-0 cursor-pointer hover:text-gray-400 text-right" /> */}
             <UpdateIcon
               className="h-7 w-7 p-0 cursor-pointer hover:text-gray-400 ml-auto"
-              onClick={() => dispatch(getHistoryWalletFiat())}
+              onClick={() => dispatch(getHistoryWalletFiat(auth.user?.userId))}
             />
           </div>
 
@@ -294,7 +308,9 @@ function Wallet() {
             </div>
             <UpdateIcon
               className="h-7 w-7 p-0 cursor-pointer hover:text-gray-400 ml-auto"
-              onClick={() => dispatch(getHistoryTransactionSwap("user123"))}
+              onClick={() =>
+                dispatch(getHistoryTransactionSwap(auth.user?.userId))
+              }
             />
           </div>
 

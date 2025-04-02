@@ -11,6 +11,11 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useLocation } from "react-router-dom";
+import api from "@/config/api";
+import qs from "qs";
+import { useDispatch, useSelector } from "react-redux";
+import { getUser } from "@/State/Auth/Action";
+import { getBalanceWallet } from "@/State/Wallet/Action";
 
 const VnPayOrderForm = () => {
   const location = useLocation(); // Lấy location từ React Router
@@ -21,9 +26,8 @@ const VnPayOrderForm = () => {
   // State to manage form fields
   const [formData, setFormData] = useState({
     amount: 150000, // Default value from HTML
-    // orderInfo: "DEPOSIT", // Default value set to the first option
     orderInfo: orderType, // Đặt mặc định theo state
-    // content: "321465464787854778",
+    userId: location.state?.userId,
     nameBank: "None",
   });
 
@@ -33,7 +37,24 @@ const VnPayOrderForm = () => {
       ...prevData,
       amount: event.target.value, // Update amount
     }));
+
+    setError("");
   };
+
+  const { auth, wallet } = useSelector((store) => store);
+
+  console.log("wallet ne ae", wallet.balance.VND);
+  const dispatch = useDispatch();
+  const jwt =
+    localStorage.getItem("jwt") || localStorage.getItem("access_token");
+
+  useEffect(() => {
+    dispatch(getUser(jwt));
+    if (auth.user?.userId) {
+      console.log("hí hí");
+      dispatch(getBalanceWallet(auth.user?.userId));
+    }
+  }, []);
 
   // Handle select changes for bank
   const handleSelectBankChange = (value) => {
@@ -51,49 +72,51 @@ const VnPayOrderForm = () => {
     }));
   };
 
+  const [error, setError] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Form submitted with:", formData);
 
+    if (
+      (wallet.balance.VND < formData.amount) &
+      (formData.orderInfo === "WITHDRAW")
+    ) {
+      setError("Số tiền trong ví không đủ");
+      return;
+    }
+
     try {
-      // Construct query parameters including nameBank and content
-      const queryParams = new URLSearchParams({
-        amount: formData.amount.toString(), // Ensure amount is a string
-        orderInfo: encodeURIComponent(formData.orderInfo), // Encode special characters
-        nameBank: encodeURIComponent(formData.nameBank), // Include bank name
-      }).toString();
+      // Encode dữ liệu theo kiểu application/x-www-form-urlencoded
+      const formEncodedData = qs.stringify({
+        amount: formData.amount,
+        orderInfo: formData.orderInfo,
+        userId: formData.userId || auth.user?.userId,
+        nameBank: formData.nameBank,
+      });
 
-      // Send data to backend as query parameters
-      const response = await fetch(
-        `http://localhost:8087/payment/submitOrder?${queryParams}`,
-        {
-          method: "POST", // Use POST even with query params if backend expects it
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded", // Match the query param format
-          },
-        }
-      );
+      const response = await api.post("/payment/submitOrder", formEncodedData, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded", // Ghi đè Content-Type
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.data) {
+        throw new Error("Không nhận được dữ liệu từ server");
       }
 
-      const data = await response.text();
-
-      console.log("data xem nao", data);
+      console.log("data xem nào", response.data);
 
       if (
-        data &&
-        typeof data === "string" &&
-        data.includes("https://sandbox.vnpayment.vn")
+        typeof response.data === "string" &&
+        response.data.includes("https://sandbox.vnpayment.vn")
       ) {
-        // Redirect to VNPay payment URL
-        window.location.href = data;
+        window.location.href = response.data; // Chuyển hướng đến VNPay
       } else {
-        console.error("Lỗi: Không nhận được URL thanh toán hợp lệ từ backend");
+        console.error("Lỗi: Không nhận được URL thanh toán hợp lệ");
       }
     } catch (error) {
-      console.error("Lỗi gửi yêu cầu:", error.message || error);
+      console.error("Lỗi gửi yêu cầu:", error.response?.data || error.message);
     }
   };
 
@@ -152,6 +175,8 @@ const VnPayOrderForm = () => {
                   onChange={handleAmountChange} // Updated to use handleAmountChange
                   required
                 />
+
+                {error && <div className="text-red-600 text-sm">{error}</div>}
               </div>
 
               <div className="space-y-2">
@@ -179,17 +204,6 @@ const VnPayOrderForm = () => {
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* <div className="space-y-2">
-                <Label htmlFor="content">Nhập nội dung chuyển tiền:</Label>
-                <Input
-                  id="content"
-                  name="content"
-                  value={formData.content}
-                  onChange={handleContentChange} // Updated to use handleContentChange
-                  required
-                />
-              </div> */}
 
               <Button type="submit" className="w-full">
                 Thanh toán

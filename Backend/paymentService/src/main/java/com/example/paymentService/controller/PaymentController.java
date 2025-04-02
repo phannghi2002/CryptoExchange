@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -34,9 +35,10 @@ public class PaymentController {
     public String submidOrder(@RequestParam("amount") int orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               @RequestParam("nameBank") String nameBank,
+                              @RequestParam("userId") String userId,
                               HttpServletRequest request) {
         String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
-        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo, nameBank, baseUrl);
+        String vnpayUrl = vnPayService.createOrder(request, orderTotal, orderInfo,userId, nameBank, baseUrl);
         log.info("in ra xem nao");
         return vnpayUrl; // Return the VNPay URL directly (frontend will handle navigation)
     }
@@ -44,7 +46,7 @@ public class PaymentController {
 
     // Sau khi hoàn tất thanh toán, VNPAY sẽ chuyển hướng trình duyệt về URL này
     @GetMapping("/vnpay-payment-return")
-    public RedirectView paymentCompleted(HttpServletRequest request) {
+    public RedirectView paymentCompleted(HttpServletRequest request) throws UnsupportedEncodingException {
         // Convert HttpServletRequest parameters to Map<String, String>
         Map<String, String> params = new HashMap<>();
         for (Enumeration<String> names = request.getParameterNames(); names.hasMoreElements();) {
@@ -55,6 +57,8 @@ public class PaymentController {
 
         // Call orderReturn with the HttpServletRequest
         int paymentStatus = vnPayService.orderReturn(request);
+
+        log.info("in ra trang thai thanh toan {}", paymentStatus);
 
         // Extract parameters for forwarding to frontend
         String orderInfo = params.get("vnp_OrderInfo");

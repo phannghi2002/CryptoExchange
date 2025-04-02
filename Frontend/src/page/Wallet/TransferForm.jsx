@@ -19,6 +19,7 @@ import { useDispatch, useSelector } from "react-redux";
 function TransferForm({ crypto }) {
   const dispatch = useDispatch();
   const { balance, listRate } = useSelector((store) => store.wallet);
+  const { auth } = useSelector((store) => store);
   const [error, setError] = useState(""); // State để lưu lỗi
 
   const [valueExchange, setValueExchange] = useState(0);
@@ -67,7 +68,7 @@ function TransferForm({ crypto }) {
     // console.log("userId, originCoin,originAmount,originPrice,targetCoin, targetAmount, targetPrice",);
 
     const body = {
-      userId: "user123", // Thay bằng userId thực tế nếu có
+      userId: auth.user?.userId, // Thay bằng userId thực tế nếu có
       originCoin: formData.fromCurrency,
       originAmount: formData.amount,
       originPrice: listRate[formData.fromCurrency], // Giá của đồng coin gốc
@@ -81,7 +82,7 @@ function TransferForm({ crypto }) {
     dispatch(createTransactionSwap(body));
 
     const body2 = {
-      userId: "user123", // Thay bằng userId thực tế nếu có
+      userId: auth.user?.userId, // Thay bằng userId thực tế nếu có
       transactionType: "SWAP",
       status: "SUCCESS",
       originCurrency: formData.fromCurrency,

@@ -23,4 +23,5 @@ public class OrderRequest {
     int paymentTimeLimit; // Thời gian thanh toán tối đa (15 hoặc 20 phút)
     BigDecimal minimum;
     BigDecimal maximum;
+    String policy;
 }

@@ -40,5 +40,10 @@ public class MarketChartController {
         }
     }
 
+    @GetMapping("/price1day/{coinId}")
+    public ResponseEntity<List<Double>> getFirst100Prices1Day(@PathVariable String coinId) {
+        List<Double> prices = marketChartService.getFirst100Prices1Day(coinId);
+        return ResponseEntity.ok(prices);
+    }
 
 }

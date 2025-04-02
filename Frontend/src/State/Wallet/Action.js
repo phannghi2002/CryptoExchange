@@ -1,5 +1,9 @@
 // import api, { API_BASE_URL } from "@/config/api";
+import api, { API_BASE_URL } from "@/config/api";
 import {
+  ADD_COIN_WALLET_FAILURE,
+  ADD_COIN_WALLET_REQUEST,
+  ADD_COIN_WALLET_SUCCESS,
   GET_BALANCE_WALLET_FAILURE,
   GET_BALANCE_WALLET_REQUEST,
   GET_BALANCE_WALLET_SUCCESS,
@@ -9,19 +13,23 @@ import {
   GET_HISTORY_WALLET_FIAT_FAILURE,
   GET_HISTORY_WALLET_FIAT_REQUEST,
   GET_HISTORY_WALLET_FIAT_SUCCESS,
+  SUBSTRACT_COIN_WALLET_FAILURE,
+  SUBSTRACT_COIN_WALLET_REQUEST,
+  SUBSTRACT_COIN_WALLET_SUCCESS,
+  UPDATE_WALLET_BUY_FAILURE,
+  UPDATE_WALLET_BUY_REQUEST,
+  UPDATE_WALLET_BUY_SUCCESS,
   UPDATE_WALLET_FAILURE,
   UPDATE_WALLET_REQUEST,
   UPDATE_WALLET_SUCCESS,
 } from "./ActionType";
-import axios from "axios";
 
-export const getBalanceWallet = () => async (dispatch) => {
+export const getBalanceWallet = (userId) => async (dispatch) => {
   dispatch({ type: GET_BALANCE_WALLET_REQUEST });
 
   try {
-    // const response = await api.get(`${API_BASE_URL}/watchlist/internal/coins`);
-    const response = await axios.get(
-      "http://localhost:8088/wallet/getWallet?userID=user123"
+    const response = await api.get(
+      `${API_BASE_URL}/wallet/getWallet?userID=${userId}`
     );
 
     dispatch({
@@ -35,15 +43,12 @@ export const getBalanceWallet = () => async (dispatch) => {
   }
 };
 
-export const getHistoryWalletFiat = () => async (dispatch) => {
+export const getHistoryWalletFiat = (userId) => async (dispatch) => {
   dispatch({ type: GET_HISTORY_WALLET_FIAT_REQUEST });
 
   try {
-    // const res = await api.post(
-    //   `${API_BASE_URL}/watchlist/toggle?coinId=${coinId}`
-    // );
-    const response = await axios.get(
-      "http://localhost:8087/payment/transaction?userId=user123"
+    const response = await api.get(
+      `${API_BASE_URL}/payment/transaction?userId=${userId}`
     );
 
     dispatch({
@@ -67,8 +72,8 @@ export const getExchangeRate = (symbols) => async (dispatch) => {
     // const res = await api.post(
     //   `${API_BASE_URL}/watchlist/toggle?coinId=${coinId}`
     // );
-    const response = await axios.get(
-      `http://localhost:8888/api/v1/coin/exchange-rate?symbols=${symbols}`
+    const response = await api.get(
+      `${API_BASE_URL}/coin/exchange-rate?symbols=${symbols}`
     );
 
     dispatch({
@@ -90,10 +95,7 @@ export const updateWallet = (body) => async (dispatch) => {
 
   try {
     // const response = await api.get(`${API_BASE_URL}/watchlist/internal/coins`);
-    const response = await axios.post(
-      "http://localhost:8088/wallet/update",
-      body
-    );
+    const response = await api.post(`${API_BASE_URL}/wallet/update`, body);
 
     dispatch({
       type: UPDATE_WALLET_SUCCESS,
@@ -103,5 +105,62 @@ export const updateWallet = (body) => async (dispatch) => {
   } catch (e) {
     console.log("error", e);
     dispatch({ type: UPDATE_WALLET_FAILURE, payload: e.message });
+  }
+};
+
+export const updateBuyWallet = (body) => async (dispatch) => {
+  dispatch({ type: UPDATE_WALLET_BUY_REQUEST });
+
+  try {
+    // const response = await api.get(`${API_BASE_URL}/watchlist/internal/coins`);
+    const response = await api.post(`${API_BASE_URL}/wallet/updateTrade`, body);
+
+    dispatch({
+      type: UPDATE_WALLET_BUY_SUCCESS,
+      payload: response.data,
+    });
+    console.log("update wallet", response.data);
+  } catch (e) {
+    console.log("error", e);
+    dispatch({ type: UPDATE_WALLET_BUY_FAILURE, payload: e.message });
+  }
+};
+export const substractCoinWallet = (userId, body) => async (dispatch) => {
+  dispatch({ type: SUBSTRACT_COIN_WALLET_REQUEST });
+
+  try {
+    const response = await api.put(
+      `${API_BASE_URL}/wallet/substract-coin/${userId}`,
+      body
+    );
+
+    dispatch({
+      type: SUBSTRACT_COIN_WALLET_SUCCESS,
+      payload: response.data,
+    });
+    console.log("update wallet", response.data);
+  } catch (e) {
+    console.log("error", e);
+    dispatch({ type: SUBSTRACT_COIN_WALLET_FAILURE, payload: e.message });
+  }
+};
+
+export const returnCoinWallet = (userId, body) => async (dispatch) => {
+  dispatch({ type: ADD_COIN_WALLET_REQUEST });
+
+  try {
+    const response = await api.put(
+      `${API_BASE_URL}/wallet/add-coin/${userId}`,
+      body
+    );
+
+    dispatch({
+      type: ADD_COIN_WALLET_SUCCESS,
+      payload: response.data,
+    });
+    console.log("update wallet", response.data);
+  } catch (e) {
+    console.log("error", e);
+    dispatch({ type: ADD_COIN_WALLET_FAILURE, payload: e.message });
   }
 };
