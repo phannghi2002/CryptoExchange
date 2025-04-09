@@ -1,19 +1,37 @@
+import { getSingleOrder } from "@/State/Order/Action";
 import { formatDateTime } from "@/utils/formatDate";
-import { CheckCircleIcon } from "lucide-react";
-import { useSelector } from "react-redux";
+import {
+  CheckCircleIcon,
+  CircleDashedIcon,
+  CircleOffIcon,
+  CircleXIcon,
+  ClockArrowUpIcon,
+} from "lucide-react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 function OrderDetails() {
   const { id } = useParams();
+  const dispatch = useDispatch();
 
-  const listOrder = useSelector((store) => store.order.listOrder);
+  // const listOrder = useSelector((store) => store.order.listOrder);
 
-  console.log("list Order:", listOrder);
+  // console.log("list Order:", listOrder);
 
-  const matchedOrder = listOrder.find((order) => order.orderId === id);
+  // const matchedOrder = listOrder.find((order) => order.orderId === id);
 
-  console.log("Matched Order:", matchedOrder);
-  const subOrders = matchedOrder?.subOrders;
+  // console.log("Matched Order:", matchedOrder);
+  // const subOrders = matchedOrder?.subOrders;
+  const order = useSelector((store) => store.order.order);
+
+  const subOrders = order?.subOrders;
+
+  useEffect(() => {
+    if (id) {
+      dispatch(getSingleOrder(id));
+    }
+  }, []);
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-6">
@@ -44,23 +62,48 @@ function OrderDetails() {
                 </p>
                 <p>
                   <span className="font-semibold">Phương thức thanh toán:</span>{" "}
-                  {order.paymentMethods}
+                  {order.paymentMethods == "BANK_TRANSFER"
+                    ? "Chuyển khoản ngân hàng"
+                    : "Chuyển tiền qua ví fiat"}
                 </p>
                 <p className="flex items-center gap-1">
                   <span className="font-semibold">Trạng thái:</span>{" "}
                   <span
-                    className={`flex items-center gap-1 ${
+                    className={`flex items-center gap-1 font-bold ${
                       order.status === "SUCCESS"
                         ? "text-green-600"
-                        : "text-red-600"
+                        : order.status === "PENDING"
+                        ? "text-yellow-600"
+                        : order.status === "IN_PROGRESS"
+                        ? "text-blue-600"
+                        : order.status === "FAILED"
+                        ? "text-red-600"
+                        : "text-gray-600"
                     }`}
                   >
-                    {order.status === "SUCCESS" && (
+                    {order.status === "SUCCESS" ? (
                       <CheckCircleIcon className="w-4 h-4" />
+                    ) : order.status === "PENDING" ? (
+                      <CircleDashedIcon className="w-4 h-4" />
+                    ) : order.status === "IN_PROGRESS" ? (
+                      <ClockArrowUpIcon className="w-4 h-4" />
+                    ) : order.status === "FAILED" ? (
+                      <CircleXIcon className="w-4 h-4" />
+                    ) : (
+                      <CircleOffIcon />
                     )}
                     {order.status}
                   </span>
                 </p>
+
+                {order.paymentMethods === "BANK_TRANSFER" && (
+                  <p className="flex items-center gap-1">
+                    <span className="font-semibold">
+                      Hạn cuối thời gian thanh toán:
+                    </span>{" "}
+                    {formatDateTime(order.paymentDeadline)}
+                  </p>
+                )}
               </div>
             </div>
           ))

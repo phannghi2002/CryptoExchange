@@ -76,9 +76,15 @@ function Wallet() {
       .replace(/\.?0+$/, "");
   };
 
+  const handleReloadWallet = async () => {
+    if (auth.user?.userId) {
+      dispatch(getBalanceWallet(auth.user?.userId));
+    }
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <div className="pt-10 w-full lg:w-[60%]">
+      <div className="pt-10 w-full lg:w-[60%] px-5">
         <Card>
           {/* Header */}
           <CardHeader className="pb-9">
@@ -87,13 +93,13 @@ function Wallet() {
                 <WalletIcon size={30} />
                 <div>
                   <CardTitle className="text-2xl">Ví fiat</CardTitle>
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <p className="text-gray-200 text-sm">#A$&5Ed</p>
                     <CopyIcon
                       size={14}
                       className="cursor-pointer hover:text-slate-300"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -101,20 +107,20 @@ function Wallet() {
                 <CoinsIcon size={30} />
                 <div>
                   <CardTitle className="text-2xl">Ví Crypto</CardTitle>
-                  <div className="flex items-center gap-2">
+                  {/* <div className="flex items-center gap-2">
                     <p className="text-gray-200 text-sm">#A$&5Ed</p>
                     <CopyIcon
                       size={14}
                       className="cursor-pointer hover:text-slate-300"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
               <div className="w-[20%] flex justify-end">
                 <ReloadIcon
                   className="w-6 h-6 cursor-pointer hover:text-gray-400"
-                  onClick={() => dispatch(getBalanceWallet())}
+                  onClick={handleReloadWallet}
                 />
               </div>
             </div>
@@ -222,67 +228,71 @@ function Wallet() {
 
           {openDW && (
             <div className="space-y-5">
-              {wallet.history.map((transaction) => (
-                <Card
-                  key={transaction.id}
-                  className="px-5 flex items-center cursor-pointer"
-                  onClick={() => setSelectedTransaction(transaction)}
-                >
-                  {/* Phần tử trái */}
-                  <div className="w-1/3 flex items-center gap-5 p-2">
-                    <Avatar>
-                      <AvatarFallback>
-                        {transaction.transactionType === "DEPOSIT" ? (
-                          <UploadIcon />
-                        ) : (
-                          <DownloadIcon />
-                        )}
-                      </AvatarFallback>
-                    </Avatar>
+              {wallet.history?.length > 0 ? (
+                wallet.history.map((transaction) => (
+                  <Card
+                    key={transaction.id}
+                    className="px-5 flex items-center cursor-pointer"
+                    onClick={() => setSelectedTransaction(transaction)}
+                  >
+                    {/* Phần tử trái */}
+                    <div className="w-1/3 flex items-center gap-5 p-2">
+                      <Avatar>
+                        <AvatarFallback>
+                          {transaction.transactionType === "DEPOSIT" ? (
+                            <UploadIcon />
+                          ) : (
+                            <DownloadIcon />
+                          )}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div className="space-y-1">
-                      <h1>
-                        {transaction.transactionType === "DEPOSIT"
-                          ? "Nạp tiền vào ví fiat"
-                          : "Rút tiền từ ví fiat"}
-                      </h1>
-                      <p className="text-sm text-gray-500">
-                        {new Date(transaction.paymentTime).toLocaleString(
-                          "vi-VN"
-                        )}
+                      <div className="space-y-1">
+                        <h1>
+                          {transaction.transactionType === "DEPOSIT"
+                            ? "Nạp tiền vào ví fiat"
+                            : "Rút tiền từ ví fiat"}
+                        </h1>
+                        <p className="text-sm text-gray-500">
+                          {new Date(transaction.paymentTime).toLocaleString(
+                            "vi-VN"
+                          )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Phần tử giữa */}
+                    <div className="w-1/3 flex justify-center ">
+                      <Button
+                        className={`w-24 focus:ring-0 ${
+                          transaction.status === "SUCCESS"
+                            ? "bg-green-500 text-white hover:bg-green-500"
+                            : "bg-red-500 text-white hover:bg-red-500"
+                        }`}
+                      >
+                        {transaction.status === "SUCCESS"
+                          ? "Thành công"
+                          : "Thất bại"}
+                      </Button>
+                    </div>
+
+                    {/* Phần tử phải */}
+                    <div className="w-1/3 text-right">
+                      <p
+                        className={
+                          transaction.status === "SUCCESS"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {transaction.amount.toLocaleString()} VND
                       </p>
                     </div>
-                  </div>
-
-                  {/* Phần tử giữa */}
-                  <div className="w-1/3 flex justify-center ">
-                    <Button
-                      className={`w-24 focus:ring-0 ${
-                        transaction.status === "SUCCESS"
-                          ? "bg-green-500 text-white hover:bg-green-500"
-                          : "bg-red-500 text-white hover:bg-red-500"
-                      }`}
-                    >
-                      {transaction.status === "SUCCESS"
-                        ? "Thành công"
-                        : "Thất bại"}
-                    </Button>
-                  </div>
-
-                  {/* Phần tử phải */}
-                  <div className="w-1/3 text-right">
-                    <p
-                      className={
-                        transaction.status === "SUCCESS"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }
-                    >
-                      {transaction.amount.toLocaleString()} VND
-                    </p>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                ))
+              ) : (
+                <p>Không có dữ liệu lịch sử nạp rút tiền</p>
+              )}
             </div>
           )}
         </div>
@@ -372,7 +382,7 @@ function Wallet() {
                   </Card>
                 ))
               ) : (
-                <p>Không có dữ liệu lịch sử giao dịch</p>
+                <p>Không có dữ liệu lịch sử đổi coin</p>
               )}
             </div>
           )}

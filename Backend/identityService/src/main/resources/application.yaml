@@ -1,8 +1,7 @@
 spring:
   application:
     name: identityService
-  security:
-    
+
 
   data:
     redis:

@@ -1,0 +1,16 @@
+.scrollbarContent {
+  scrollbar-width: thin;
+  scrollbar-color: #f59e0b #4b5563;
+}
+
+.scrollbarContent::-webkit-scrollbar {
+  width: 6px; /* Độ rộng của thanh cuộn */
+}
+
+.scrollbarContent::-webkit-scrollbar-thumb {
+  background-color: #f59e0b;
+}
+
+.scrollbarContent::-webkit-scrollbar-track {
+  background-color: #4b5563;
+}

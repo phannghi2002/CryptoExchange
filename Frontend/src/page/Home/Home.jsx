@@ -27,48 +27,6 @@ import {
 } from "@/State/Auth/Action";
 
 function Home() {
-  // fetch("http://localhost:8888/api/v1/identity/oauth2/success", {
-  //   method: "GET",
-  //   credentials: "include",
-  // })
-  //   .then((response) => {
-  //     if (!response.ok) throw new Error("Không tìm thấy token");
-  //     return response.json();
-  //   })
-  //   .then((data) => {
-  //     if (data.token) {
-  //       console.log("in ra data xem dung ko nao", data);
-  //       localStorage.setItem("access_token", data.token);
-  //       localStorage.setItem("twoAuth", data.twoAuth);
-  //     }
-  //   })
-  //   .catch((error) => {
-  //     console.error("Lỗi khi lấy token: ", error);
-  //   });
-  // useEffect(() => {
-  //   fetch("http://localhost:8888/api/v1/identity/oauth2/success", {
-  //     method: "GET",
-  //     credentials: "include",
-  //   })
-  //     .then((response) => {
-  //       if (!response.ok) throw new Error("Không tìm thấy token");
-  //       return response.json();
-  //     })
-  //     .then((data) => {
-  //       if (data.token) {
-  //         console.log("in ra data xem dung ko nao", data, data.twoAuth);
-  //         localStorage.setItem("access_token", data.token);
-  //         localStorage.setItem(
-  //           "twoAuth",
-  //           JSON.stringify(data.twoAuth === "true")
-  //         );
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.error("Lỗi khi lấy token: ", error);
-  //     });
-  // }, []);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const [updatedCoins, setUpdatedCoins] = useState([]);
@@ -280,7 +238,7 @@ function Home() {
             category === "top50" ? "h-[90vh]" : "h-[77vh]"
           }`}
         >
-          <div className="lg:flex px-5 w-[40%]">
+          <div className="lg:flex px-5 xl:max-w-[40%] lg:max-w-[50%] md:max-w-[65%] sm:max-w-[80%]  ">
             <div className="lg:border-r lg:w-[100%] lg:border-l">
               <div className="p-3 flex items-center gap-4">
                 <Button

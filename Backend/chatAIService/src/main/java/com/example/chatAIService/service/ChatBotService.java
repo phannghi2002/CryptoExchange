@@ -8,6 +8,7 @@ import com.example.chatAIService.response.FunctionResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -21,7 +22,8 @@ import java.util.Map;
 @Slf4j
 @Service
 public class ChatBotService {
-    String GEMINI_API_KEY = "AIzaSyC-BNZoFWzSyXk2aZUH5dlcqSvkvpQ_OZU";
+    @Value("${gemini.api.key}")
+    String GEMINI_API_KEY;
 
     private Double getDoubleValue(Object value) {
         if (value instanceof Double) {
@@ -60,14 +62,12 @@ public class ChatBotService {
         String url = "http://localhost:8081/coin/details/" + currencyName;
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
 
-        HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<Map> responseEntity = restTemplate.getForEntity(url, Map.class);
         Map<String, Object> responseBody = responseEntity.getBody();
 
         if (responseBody != null) {
-            log.info("ma kho chiu vo cung" + responseBody);
+
             return CoinDto.builder()
                     .id(String.valueOf(responseBody.get("id"))) // Convert to String
                     .symbol(String.valueOf(responseBody.get("symbol")))

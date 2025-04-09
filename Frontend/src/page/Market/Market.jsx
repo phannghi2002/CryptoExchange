@@ -1,10 +1,11 @@
+import { getUser } from "@/State/Auth/Action";
 import {
-  getAllOrder,
-  getAnotherOrder,
+  getAnotherOrderPending,
   getBank,
-  getTypeAnotherOrder,
+  getTypeAnotherOrderPending,
   getTypeOrder,
   updateOrderBuy,
+  updateOrderReturnSubIdBuy,
 } from "@/State/Order/Action";
 import { getBalanceWallet, updateBuyWallet } from "@/State/Wallet/Action";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,6 @@ function Market() {
 
   const dispatch = useDispatch();
   const { auth, wallet, order } = useSelector((store) => store);
-  console.log("auth ne con", auth);
 
   const formatNumberWithCommas = (value) => {
     return Number(value).toLocaleString("en-US");
@@ -67,26 +67,28 @@ function Market() {
   }, []);
 
   useEffect(() => {
-    if (
-      activeTab === "ALL" &&
-      selectedPayment === "ALL" &&
-      !debouncedPrice &&
-      auth.user?.userId
-    ) {
-      // dispatch(getAllOrder());
-      dispatch(getAnotherOrder(auth.user?.userId));
-    } else if (auth.user?.userId) {
-      // dispatch(getTypeOrder(coin, paymentMethod, debouncedPrice));
+    console.log("Effect run with:", {
+      activeTab,
+      selectedPayment,
+      debouncedPrice,
+      userId: auth.user?.userId,
+    });
+
+    if (!auth.user?.userId) return;
+
+    if (activeTab === "ALL" && selectedPayment === "ALL" && !debouncedPrice) {
+      dispatch(getAnotherOrderPending(auth.user.userId));
+    } else {
       dispatch(
-        getTypeAnotherOrder(
-          auth.user?.userId,
+        getTypeAnotherOrderPending(
+          auth.user.userId,
           coin,
           paymentMethod,
           debouncedPrice
         )
       );
     }
-  }, [debouncedPrice, activeTab, selectedPayment, dispatch]);
+  }, [debouncedPrice, activeTab, selectedPayment, auth.user?.userId]);
 
   const [filterBy, setFilterBy] = useState("price");
 
@@ -235,24 +237,9 @@ function Market() {
   const [showModalBank, setShowModalBank] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const generateRandom20Digits = () => {
-    let result = "";
-    for (let i = 0; i < 20; i++) {
-      result += Math.floor(Math.random() * 10); // random số từ 0 đến 9
-    }
-    return result;
-  };
-
   const [timeLeft, setTimeLeft] = useState(0);
 
   const handleClickBuy = (item, index) => {
-    // console.log(
-    //   "in item",
-    //   item,
-    //   item.remainingAmount,
-    //   Number(coinInputs[index])
-    // );
-
     console.log("wallet ne", wallet);
     if (Number(coinInputs[index]) > item.remainingAmount) {
       showToast("Thất bại rồi!", "Vượt quá số dư khả dụng", "error");
@@ -274,7 +261,8 @@ function Market() {
             item.id,
             auth.user?.userId,
             coinInputs[index],
-            reverseTransfer[selectedPayments[index]]
+            reverseTransfer[selectedPayments[index]],
+            Number(pricePays[index])
           )
         );
 
@@ -291,6 +279,23 @@ function Market() {
 
         handlePaymentSuccess(item);
         showToast("Thành công rồi!", "Giao dịch đã được xử lý", "success");
+
+        if (
+          activeTab === "ALL" &&
+          selectedPayment === "ALL" &&
+          !debouncedPrice
+        ) {
+          dispatch(getAnotherOrderPending(auth.user.userId));
+        } else {
+          dispatch(
+            getTypeAnotherOrderPending(
+              auth.user.userId,
+              coin,
+              paymentMethod,
+              debouncedPrice
+            )
+          );
+        }
       }
     } else if (reverseTransfer[selectedPayments[index]] === "BANK_TRANSFER") {
       console.log("Thanh toán qua ngân hàng nhỉ", item);
@@ -300,20 +305,46 @@ function Market() {
         price: item.price, // Giá
         usdt: coinInputs[index], // Số USDT nhận
         orderId: item.orderId, // Số lệnh
-        numberOrder: generateRandom20Digits(),
-        // bankNumber: bank?.numberAccount, // Số TK ngân hàng
-        // note: bank?.contentPay, // Nội dung chuyển khoản
+        // numberOrder: generateRandom20Digits(),
         userId: item.userId,
         paymentDeadline: item.paymentDeadline, // thời gian
       });
 
       setTimeLeft(item.paymentDeadline * 60);
-      setShowModalBank(true); // 👉 mở modal
+      setShowModalBank(true); //  mở modal
+
+      showToast("Thành công rồi!", "Đặt lệnh thành công", "success");
+
+      dispatch(
+        updateOrderReturnSubIdBuy(
+          item.id,
+          auth.user?.userId,
+          coinInputs[index],
+          reverseTransfer[selectedPayments[index]],
+          Number(pricePays[index])
+        )
+      );
+
+      if (activeTab === "ALL" && selectedPayment === "ALL" && !debouncedPrice) {
+        dispatch(getAnotherOrderPending(auth.user.userId));
+      } else {
+        console.log("Dispatching getTypeAnotherOrder");
+        dispatch(
+          getTypeAnotherOrderPending(
+            auth.user.userId,
+            coin,
+            paymentMethod,
+            debouncedPrice
+          )
+        );
+      }
     }
   };
 
   useEffect(() => {
-    dispatch(getBank(auth.user?.userId));
+    if (auth.user?.userId) {
+      dispatch(getBank(auth.user?.userId));
+    }
   }, []);
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -426,7 +457,7 @@ function Market() {
 
         {order.listOrder.length === 0 ? (
           <div className="text-center text-gray-400 py-10 text-sm">
-            Không có đơn hàng nào cho loại coin này.
+            Không có đơn hàng nào phù hợp cho loại coin này.
           </div>
         ) : (
           sortOrders(order.listOrder).map((item, index) => (

@@ -16,5 +16,5 @@ public class SubOrderRequest {
     String buyerId;
     double amount;
     PaymentMethod paymentMethods;
-
+    double priceVnd;
 }

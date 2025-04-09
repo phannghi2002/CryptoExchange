@@ -16,6 +16,7 @@ public class SubOrder {
     String subOrderId;
     String buyerId;
     double amount;
+    double priceVnd;
     Status status;
     PaymentMethod paymentMethods;
     Date createAt;

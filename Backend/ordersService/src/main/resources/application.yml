@@ -4,6 +4,13 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/order-service
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+
 server:
   port: 8090
   servlet:
@@ -12,3 +19,4 @@ server:
 app:
   services:
     wallet: http://localhost:8088/wallet
+    notify: http://localhost:8086/notification/internal

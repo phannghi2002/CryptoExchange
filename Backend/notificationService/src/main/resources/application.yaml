@@ -11,7 +11,11 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
 
-notification:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/notification-service
+
+
 
 server:
   port: 8086

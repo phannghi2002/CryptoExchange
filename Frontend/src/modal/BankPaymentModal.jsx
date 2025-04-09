@@ -9,7 +9,8 @@ import { useEffect, useState } from "react";
 import ConfirmModal from "./ConfirmModal";
 import { formatNumberWithCommas } from "@/utils/formatNumberWithCommas";
 import { useDispatch, useSelector } from "react-redux";
-import { getBank } from "@/State/Order/Action";
+import { getBank, updateStatusOfBankTransfer } from "@/State/Order/Action";
+import { showToast } from "@/utils/toast";
 
 const BankPaymentModal = ({
   isOpen,
@@ -19,18 +20,17 @@ const BankPaymentModal = ({
   timeLeft,
 }) => {
   const [showConfirm, setShowConfirm] = useState(false);
-  console.log("orderInfo", orderInfo);
 
   const dispatch = useDispatch();
   const { order } = useSelector((store) => store);
+
+  console.log("suborderId ne cem", order?.subOrderId);
 
   useEffect(() => {
     if (orderInfo.userId) {
       dispatch(getBank(orderInfo.userId));
     }
   }, []);
-
-  console.log("bank ne be yeu", order);
 
   const handleRequestClose = () => {
     setShowConfirm(true);
@@ -39,6 +39,16 @@ const BankPaymentModal = ({
   const handleConfirmClose = () => {
     setShowConfirm(false);
     onClose();
+
+    dispatch(
+      updateStatusOfBankTransfer(
+        orderInfo?.orderId,
+        order?.subOrderId,
+        "NOT_PAYMENT"
+      )
+    );
+
+    showToast("Thành công rồi!", "Đã hủy lệnh thành công", "success");
   };
 
   const formatTime = (seconds) => {
@@ -96,25 +106,33 @@ const BankPaymentModal = ({
             </div>
             <div>
               <span className="text-gray-400">Số lệnh:</span>{" "}
-              <span className="font-mono">{orderInfo.numberOrder}</span>
+              {/* <span className="font-mono">{orderInfo.numberOrder}</span> */}
+              <span className="font-mono">{order?.subOrderId}</span>
             </div>
 
             <hr className="my-2 border-gray-600" />
 
-            <div>
+            <div className="flex flex-col gap-2">
               <span className="text-yellow-400 font-semibold">
                 Cách thanh toán:
               </span>
               <p>Chuyển khoản ngân hàng</p>
               <p className="text-gray-300">
-                Số tài khoản: {order.bank?.numberAccount}
+                Số tài khoản:{" "}
+                <span className="ml-2">{order.bank?.numberAccount}</span>
               </p>
               <p className="text-gray-300">
-                Chủ tài khoản: {order.bank?.nameAccount}
+                Chủ tài khoản:{" "}
+                <span className="ml-2">{order.bank?.nameAccount}</span>
               </p>
-              <p className="text-gray-300">Ngân hàng: {order.bank?.nameBank}</p>
               <p className="text-gray-300">
-                Nội dung chuyển khoản: {orderInfo.numberOrder}
+                Ngân hàng:{" "}
+                <span className="ml-2 uppercase">{order.bank?.nameBank}</span>
+              </p>
+              <p className="text-gray-300">
+                Nội dung chuyển khoản:
+                {/* {orderInfo.numberOrder} */}
+                <span className="ml-2">{order?.subOrderId}</span>
               </p>
             </div>
           </div>

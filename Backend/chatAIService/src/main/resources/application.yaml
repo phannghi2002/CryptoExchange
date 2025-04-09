@@ -5,6 +5,8 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/aiChatService
 
+
+
 server:
   port: 8082
 

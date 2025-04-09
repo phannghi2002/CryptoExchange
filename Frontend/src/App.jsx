@@ -32,10 +32,12 @@ function App() {
   console.log(location.pathname);
 
   useEffect(() => {
-    // if (localStorage.getItem("jwt") || access_token || auth.jwt) {
-    dispatch(getUser(auth.jwt || localStorage.getItem("jwt") || access_token));
-    console.log("auth", auth.user);
-    // }
+    if (localStorage.getItem("jwt") || access_token || auth.jwt) {
+      dispatch(
+        getUser(auth.jwt || localStorage.getItem("jwt") || access_token)
+      );
+      console.log("auth", auth.user);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth.jwt]);
 
@@ -44,34 +46,27 @@ function App() {
       <Navbar />
 
       <Routes>
+        <Route path="/overview" element={<Home />} />
+        <Route path="stock/:id" element={<StockDetails />} />
+
         {token || access_token ? (
           <>
-            <Route path="/overview" element={<Home />} />
             <Route path="/kyc" element={<Kyc />} />
             <Route path="/watchlist" element={<Watchlist />} />
-
             <Route path="/profile" element={<Profile />} />
             <Route path="/search" element={<SearchCoin />} />
             <Route path="/wallet" element={<Wallet />} />
             <Route path="/vnpay" element={<VnPayOrderForm />} />
-
             <Route path="/payment-result" element={<PaymentResult />} />
             <Route path="/order" element={<Order />} />
-
             <Route path="/order/:id" element={<OrderDetails />} />
             <Route path="/market" element={<Market />} />
-            {/* <Route path="market/:id" element={<StockDetails />} /> */}
-            <Route path="stock/:id" element={<StockDetails />} />
             <Route path="/account-bank" element={<BankInfoSection />} />
-
             <Route path="/order-limit" element={<OrderLimit />} />
             <Route path="*" element={<Notfound />} />
           </>
         ) : (
           <>
-            <Route path="/overview" element={<Home />} />
-
-            <Route path="stock/:id" element={<StockDetails />} />
             <Route path="/auth/*" element={<Auth />} />
 
             {/* <Route path="*" element={<Navigate to="/auth/signin" replace />} /> */}

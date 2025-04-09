@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface OrderRepository extends MongoRepository<Order, String> {
+public interface OrderRepository extends MongoRepository<Order, String>, OrderRepositoryCustom {
     List<Order> findByCoin(String coin);
 
     List<Order> findByPaymentMethodsContainingIgnoreCase(String paymentMethod);
@@ -18,6 +18,12 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     Page<Order> findAll(Pageable pageable); // Phương thức phân trang
 
     List<Order> findByUserIdNot(String userId);
+
+    List<Order> findByUserIdNotAndStatus(String userId, Status status);
+
+    Page<Order> findByUserIdNotAndStatus(String userId, Status status, Pageable pageable);
+
+    Page<Order> findByUserIdAndStatus(String userId, Status status, Pageable pageable);
 
     List<Order> findByUserId(String userId);
 
@@ -31,4 +37,5 @@ public interface OrderRepository extends MongoRepository<Order, String> {
 
     List<Order> findByUserIdAndStatus(String userId, Status status);
 
+    Order findByOrderId(String orderId);
 }

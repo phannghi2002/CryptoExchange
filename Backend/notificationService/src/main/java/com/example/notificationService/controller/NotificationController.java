@@ -34,4 +34,27 @@ public class NotificationController {
                         .htmlContent(body)
                 .build());
     }
+
+//    @KafkaListener(topics = "order-events", groupId = "notification-group")
+//    public void listenOrderEvents(String message) {
+//        JsonObject event = new JsonParser().parse(message).getAsJsonObject();
+//        if ("PAYMENT_SUBMITTED".equals(event.get("status").getAsString())) {
+//            String sellerId = event.get("sellerId").getAsString();
+//            String orderId = event.get("orderId").getAsString();
+//            String notification = "Người mua đã chuyển khoản cho đơn hàng #" + orderId + ". Vui lòng xác nhận.";
+//            messagingTemplate.convertAndSend("/topic/notifications/" + sellerId, notification);
+//        }
+//    }
+
+//    @KafkaListener(topics = "order-events")
+//    public void listenOrderEvents(String message) {
+//        JSONObject event = new JSONObject(message);
+//        if ("PAYMENT_SUBMITTED".equals(event.getString("status"))) {
+//            String sellerId = event.getString("sellerId");
+//            String orderId = event.getString("orderId");
+//            String notification = "Người mua đã chuyển khoản cho đơn hàng #" + orderId + ". Vui lòng xác nhận đã nhận tiền.";
+//            messagingTemplate.convertAndSend("/topic/notifications/" + sellerId, notification);
+//        }
+//    }
+
 }

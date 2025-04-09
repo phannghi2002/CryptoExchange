@@ -46,7 +46,8 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             "/identity/test-redis",
             "/ai/.*",
             "/coin/.*",
-            "/notification/email/send"
+            "/notification/email/send",
+            "/notification/.*"
     };
 
     @Value("${app.api-prefix}")

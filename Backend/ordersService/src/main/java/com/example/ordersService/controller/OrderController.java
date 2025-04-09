@@ -1,12 +1,15 @@
 package com.example.ordersService.controller;
 
+import com.example.ordersService.constant.Status;
 import com.example.ordersService.dto.request.BankRequest;
 import com.example.ordersService.dto.request.OrderRequest;
 import com.example.ordersService.dto.request.SubOrderRequest;
+import com.example.ordersService.dto.response.OrderNotifyResponse;
+import com.example.ordersService.dto.response.PagedResponse;
+import com.example.ordersService.dto.response.SubOrderWithCoinDTO;
 import com.example.ordersService.entity.Bank;
 import com.example.ordersService.entity.Order;
 import com.example.ordersService.service.OrderService;
-import jakarta.websocket.server.PathParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,7 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -33,6 +39,24 @@ public class OrderController {
         return orderService.updateOrderFromBuyer(request, id);
     }
 
+    @PutMapping("/updateOrderReturnSubId/{id}")
+    public String updateBuyerOrderReturnSubId(@RequestBody SubOrderRequest request, @PathVariable String id) {
+        return orderService.updateOrderReturnSubIdFromBuyer(request, id);
+    }
+
+    @PutMapping("/updateStatusOfBankTransfer")
+    public Order updateStatusOfBankTransfer(@RequestParam String orderId,
+                                             @RequestParam String subOrderId,
+                                             @RequestParam Status status
+                                             ) {
+        return orderService.updateStatusOfBankTransfer(orderId, subOrderId, status);
+    }
+
+    @GetMapping("/getOrder/{orderId}")
+    public Order getOrder(@PathVariable String orderId){
+        return orderService.getOrder(orderId);
+    }
+
     @GetMapping("/getAllOrder")
     public List<Order> getAllOrder() {
         return orderService.getAllOrder();
@@ -41,6 +65,11 @@ public class OrderController {
     @GetMapping("/getAnotherOrder/{userId}")
     public List<Order> getAnotherOrder(@PathVariable String userId) {
         return orderService.getAnotherOrder(userId);
+    }
+
+    @GetMapping("/getAnotherOrderPending/{userId}")
+    public List<Order> getAnotherOrderPending(@PathVariable String userId) {
+        return orderService.getAnotherOrderPending(userId);
     }
 
     @GetMapping("/getMyOrder/{userId}")
@@ -78,6 +107,17 @@ public class OrderController {
         return orderService.getAnotherOrdersByFilters(userId, coin, paymentMethod, price);
     }
 
+    @GetMapping("/getAnotherOrderPending")
+    public List<Order> getAnotherPendingUserIdOrdersByCoinAndPaymentMethod(
+            @RequestParam(required = true) String userId,
+            @RequestParam(required = false) String coin,
+            @RequestParam(required = false) String paymentMethod,
+            @RequestParam(required = false) BigDecimal price
+    ) {
+
+        return orderService.getAnotherPendingOrdersByFilters(userId, coin, paymentMethod, price);
+    }
+
     @GetMapping("/getOrderPending/{userId}")
     public List<Order> getOrderPending(@PathVariable String userId) {
         return orderService.getOrderPending(userId);
@@ -104,7 +144,7 @@ public class OrderController {
         } catch (IllegalStateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
                     "status", "error",
-                    "message", "Không thể hủy lệnh do có SubOrder chưa hoàn thành."
+                    "message", e.getMessage()
             ));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
@@ -113,6 +153,42 @@ public class OrderController {
             ));
         }
     }
+
+    @GetMapping("/{orderId}/suborders/{subOrderId}")
+    public OrderNotifyResponse getOrderNotify(
+            @PathVariable String orderId,
+            @PathVariable String subOrderId) {
+        return orderService.getOrderNotify(orderId, subOrderId);
+    }
+
+
+    @GetMapping("/suborder-ids/by-group")
+    public ResponseEntity<List<SubOrderWithCoinDTO>> getSubOrdersByGroup(
+            @RequestParam String userId,
+            @RequestParam(required = false, defaultValue = "GROUP_1") String group
+    ) {
+        List<SubOrderWithCoinDTO> subOrders = orderService.getSubOrdersByGroup(userId, group);
+        return ResponseEntity.ok(subOrders);
+    }
+
+    @GetMapping("/another-pending")
+    public ResponseEntity<PagedResponse<Order>> getAnotherOrderPending(
+            @RequestParam String userId,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        PagedResponse<Order> response = orderService.getAnotherOrderPending(userId, page);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/my-order-pending")
+    public ResponseEntity<PagedResponse<Order>> getMyOrderPending(
+            @RequestParam String userId,
+            @RequestParam(defaultValue = "0") int page
+    ) {
+        PagedResponse<Order> response = orderService.getMyOrderPending(userId, page);
+        return ResponseEntity.ok(response);
+    }
+
 
 
     @PostMapping("/create-bank")

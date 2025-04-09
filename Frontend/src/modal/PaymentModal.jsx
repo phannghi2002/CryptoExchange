@@ -3,11 +3,15 @@ import { useState } from "react";
 import { showToast } from "@/utils/toast";
 import ConfirmModal from "./ConfirmModal";
 import { formatNumberWithCommas } from "@/utils/formatNumberWithCommas";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { updateStatusOfBankTransfer } from "@/State/Order/Action";
 
 const PaymentModal = ({ onClose, timeLeft, orderInfo }) => {
   const [showConfirm, setShowConfirm] = useState(false); // State cho modal xác nhận
   console.log("order ne", orderInfo);
+
+  const dispatch = useDispatch();
+  const { order } = useSelector((store) => store);
 
   // Hàm định dạng thời gian
   const formatTime = (seconds) => {
@@ -24,9 +28,17 @@ const PaymentModal = ({ onClose, timeLeft, orderInfo }) => {
   const handleConfirmClose = () => {
     setShowConfirm(false); // Đóng modal xác nhận
     onClose(); // Đóng PaymentModal
-  };
 
-  const { order } = useSelector((store) => store);
+    dispatch(
+      updateStatusOfBankTransfer(
+        orderInfo?.orderId,
+        order?.subOrderId,
+        "NOT_PAYMENT"
+      )
+    );
+
+    showToast("Thành công rồi!", "Đã hủy lệnh thành công", "success");
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10]">
@@ -73,8 +85,7 @@ const PaymentModal = ({ onClose, timeLeft, orderInfo }) => {
                   <strong>Ngân hàng:</strong> {order.bank?.nameBank}
                 </p>
                 <p>
-                  <strong>Nội dung chuyển khoản:</strong>{" "}
-                  {orderInfo.numberOrder}
+                  <strong>Nội dung chuyển khoản:</strong> {order?.subOrderId}
                 </p>
               </div>
             </div>
@@ -94,19 +105,29 @@ const PaymentModal = ({ onClose, timeLeft, orderInfo }) => {
               <div className="flex gap-3 mt-4">
                 <button
                   className="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-500 transition"
-                  onClick={() => console.log("vcl")}
+                  onClick={() => console.log("kko")}
                 >
                   Trợ giúp
                 </button>
                 <button
                   className="px-4 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-400 transition"
-                  onClick={() =>
+                  onClick={() => {
                     showToast(
                       "Thành công rồi!",
                       "Thông tin đã được gửi đến người bán",
                       "success"
-                    )
-                  }
+                    );
+
+                    dispatch(
+                      updateStatusOfBankTransfer(
+                        orderInfo.orderId,
+                        order.subOrderId,
+                        "PENDING"
+                      )
+                    );
+
+                    onClose();
+                  }}
                 >
                   Đã chuyển tiền, thông báo cho người bán
                 </button>

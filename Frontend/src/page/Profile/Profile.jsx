@@ -62,7 +62,7 @@ function Profile() {
     hasJwt ? dispatch(toggle2FAUser()) : dispatch(toggle2FAOAuthUser());
   };
   return (
-    <div className="flex flex-col items-center mb-5">
+    <div className="flex flex-col items-center mb-5 px-5">
       <div className="pt-10 w-full lg:w-[60%]">
         <Card>
           <CardHeader className="pb-9">

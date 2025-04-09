@@ -7,6 +7,7 @@ import profileReducer from "./Profile/Reducer";
 import walletReducer from "./Wallet/Reducer";
 import transactionReducer from "./Transaction/Reducer";
 import orderReducer from "./Order/Reducer";
+import notifyReducer from "./Notify/Reducer";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   wallet: walletReducer,
   transaction: transactionReducer,
   order: orderReducer,
+  notify: notifyReducer,
 });
 
 export const store = legacy_createStore(rootReducer, applyMiddleware(thunk));

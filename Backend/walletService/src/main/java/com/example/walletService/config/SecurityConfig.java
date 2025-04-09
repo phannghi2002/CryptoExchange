@@ -17,7 +17,6 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 
-
     private final CustomJwtDecoder customJwtDecoder;
 
     public SecurityConfig(CustomJwtDecoder customJwtDecoder) {
@@ -27,7 +26,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request->request
-                .requestMatchers(HttpMethod.POST, "/update").permitAll()
+                .requestMatchers( "/update","/internal/**").permitAll()
                 .anyRequest()
                 .authenticated());
 

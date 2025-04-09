@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { BellIcon } from "@radix-ui/react-icons";
+import NotificationBell from "../NotificationBell/NotificationBell";
 
 function Navbar() {
   const dispatch = useDispatch();
@@ -77,40 +78,17 @@ function Navbar() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* <DropdownHover
-              content={
-                <div className="py-1">
-                  <div className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                    Đặt lệnh P2P
-                  </div>
-                  <div className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                    Đặt lệnh limit
-                  </div>
-                </div>
-              }
-            >
-              <span className="cursor-pointer hover:text-yellow-500">
-                Đặt lệnh
-              </span>
-            </DropdownHover> */}
           </div>
         )}
       </div>
 
       {(token || access_token) && (
         <div className="flex items-center space-x-3">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <span className="cursor-pointer hover:text-yellow-500">
-                <BellIcon className="h-7 w-7" />
-              </span>
-            </DropdownMenuTrigger>
+          {/* <NotificationBell /> */}
 
-            <DropdownMenuContent className="bg-gray-800 text-white p-5">
-              Hiện tại không có thông báo nào
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center space-x-3 ">
+            <NotificationBell />
+          </div>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -143,36 +121,6 @@ function Navbar() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-
-          {/* <DropdownHover
-            content={
-              <div className="py-1">
-                <div className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                  Thông tin cá nhân
-                </div>
-                <div className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                  Xác thực Kyc
-                </div>
-                <div className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                  Tài khoản ngân hàng
-                </div>
-              </div>
-            }
-          >
-            <CircleUserIcon size={28} />
-          </DropdownHover>
-
-          <DropdownHover
-            content={
-              <div className="py-1">
-                <div className="px-4 py-2 hover:bg-gray-700 cursor-pointer">
-                  Đăng xuất
-                </div>
-              </div>
-            }
-          >
-            <LogOutIcon size={28} />
-          </DropdownHover> */}
         </div>
       )}
 
